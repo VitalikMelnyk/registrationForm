@@ -1,43 +1,70 @@
 .form {
+  display: flex;
+  justify-content: center;
+  // align-items: center;
+  max-width: 400px;
+  min-height: 550px;
+  margin: 50px auto;
+  // min-height: 100%;
+  border: 1px solid gray;
+  border-radius: 10px;
+
+  > .wrapper {
     display: flex;
-    justify-content: center;
-    // align-items: center;
-    max-width: 450px;
-    min-height: 450px;
-    margin: 50px auto;
-    // min-height: 100%;
-    border: 3px solid black;
+    flex-flow: column wrap;
+    width: 100%;
 
-    > .wrapper {
-        display: flex;
-        flex-flow: column wrap;
-        width: 100%;
-
-        > .header {
-            text-align: center;
-            max-height: fit-content;;
-        }
-        > .progressBar {
-            max-height: fit-content;
-        }
-
-        > .inputFiels {
-            display: flex;
-            flex-direction: column;
-            
-            > .form-control {
-                width: 1000px;
-            }
-        }
-
-        > .formButton {
-            max-height: fit-content;
-            display: flex;
-            justify-content: flex-end;
-            padding-right: 2%;
-        }
+    .header {
+      text-align: center;
+      max-height: fit-content;
+      .header-title {
+        margin: 1rem 0;
+        font-size: 2rem;
+      }
     }
-    
-    
+    .progressBar {
+      max-height: fit-content;
+      margin-top: 0.2rem;
 
+      .progress {
+        height: 0.5rem;
+        border: 1px solid gray;
+        border-radius: 0;
+      }
+    }
+
+    .inputFiels {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 1rem;
+
+      .form-control {
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid #000;
+        // border-top: 1px solid #000;
+        border-radius: 0;
+        // margin: 0 10px;
+      }
+
+      .form-label {
+        //   margin-left: 1rem;
+      }
+    }
+
+    .formButton {
+      max-height: fit-content;
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 0.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #000;
+    }
+  }
+}
+
+.label-error {
+    color: red;
+    // background-color: red;
 }
