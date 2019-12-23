@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-
+import { Switch, Route } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import {Formiks} from './components/Form/Formik';
+import { Introduction } from './components/Form/Introduction';
+import { Welcome } from './components/Form/Welcome';
 
 
 export default class App extends Component {
@@ -9,7 +11,13 @@ export default class App extends Component {
     return (
       <Container fluid={true}>
         {/* <SectionForm /> */}
-        <Formiks />
+        <Switch>
+          <Route exact path="/" component={Introduction} />
+          <Route path="/auth" component={Formiks} />
+          <Route path="/welcome" component={Welcome} />
+        </Switch>
+
+        {/* <Formiks /> */}
       </Container>
     )
   }

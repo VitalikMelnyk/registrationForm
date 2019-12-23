@@ -8,6 +8,7 @@
   // min-height: 100%;
   border: 1px solid gray;
   border-radius: 10px;
+  box-shadow: 9px 10px 49px -1px rgba(0,0,0,0.5);
 
   > .wrapper {
     display: flex;
@@ -48,17 +49,20 @@
         // margin: 0 10px;
       }
 
-      .form-label {
+      label {
         //   margin-left: 1rem;
+        text-transform: uppercase;
       }
     }
 
-    .formButton {
+    .formButtons {
       max-height: fit-content;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
       padding-right: 0.5rem;
       padding-top: 1.5rem;
+      padding-bottom: 1rem;
+      padding-left: 0.5rem;
       border-top: 1px solid #000;
     }
   }

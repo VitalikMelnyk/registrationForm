@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 // import Row from "react-bootstrap/Row";
@@ -12,6 +13,7 @@ import "./SectionForm.scss";
 
 export const Formiks = () => {
   // let emailError =
+  
 
   return (
     <Formik
@@ -33,6 +35,8 @@ export const Formiks = () => {
       })}
       onSubmit={fields => {
         alert("SUCCESS!! :-)\n\n" + JSON.stringify(fields, null, 4));
+
+        
       }}
       render={({ errors, status, touched }) => (
         <Form className="form">
@@ -137,12 +141,17 @@ export const Formiks = () => {
             </Col>
             {/* ---------------Repeat Password -----------------------*/}
 
-            <Col className="formButton">
-              <div className="form-group">
-                <Button variant="primary" type="submit">
-                  Submit
+            <Col className="formButtons">
+              <Link to="/">
+                <Button variant="secondary" type="submit">
+                  Previous
                 </Button>
-              </div>
+              </Link>
+              <Link to="/welcome">
+                <Button variant="primary" type="submit">
+                  Next
+                </Button>
+              </Link>
             </Col>
           </Row>
         </Form>
