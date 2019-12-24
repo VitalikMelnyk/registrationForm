@@ -4,16 +4,37 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 // import Row from "react-bootstrap/Row";
 // // import Form from "react-bootstrap/Form";
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from "react-bootstrap/Button";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import {Welcome} from './Welcome';
 
 import "./SectionForm.scss";
 
+
+// Yup validation
+
+const SignupScheme = Yup.object().shape({
+  email: Yup.string()
+    .email("Email is invalid")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Confirm Password is required")
+})
+
+
+
+
 export const Formiks = () => {
   // let emailError =
-  
+  // const [redirect, setRedirect] = useState(false);
+
 
   return (
     <Formik
@@ -22,24 +43,15 @@ export const Formiks = () => {
         password: "",
         confirmPassword: ""
       }}
-      validationSchema={Yup.object().shape({
-        email: Yup.string()
-          .email("Email is invalid")
-          .required("Email is required"),
-        password: Yup.string()
-          .min(6, "Password must be at least 6 characters")
-          .required("Password is required"),
-        confirmPassword: Yup.string()
-          .oneOf([Yup.ref("password"), null], "Passwords must match")
-          .required("Confirm Password is required")
-      })}
-      onSubmit={fields => {
-        alert("SUCCESS!! :-)\n\n" + JSON.stringify(fields, null, 4));
-
+      validationSchema={SignupScheme}
+      onSubmit={(fields) => {
         
+        console.log(fields);
+        return <Welcome />
+        // alert("SUCCESS!! :-)\n\n" + JSON.stringify(fields, null, 4));
       }}
-      render={({ errors, status, touched }) => (
-        <Form className="form">
+      render={({ errors, isValid, touched, handleSubmit, handleReset, dirty }) => (
+        <Form className="form" onSubmit={handleSubmit}>
           <Row noGutters={true} className="wrapper">
             <Col className="header">
               <h1 className="header-title">SignUp</h1>
@@ -53,9 +65,9 @@ export const Formiks = () => {
               <div className="form-group">
                 <label
                   htmlFor="email"
-                  className={errors.email ? "label-error" : ""}
+                  className={errors.email && touched.email ? "label-error" : ""}
                 >
-                  {errors.email ? (
+                  {errors.email && touched.email ? (
                     <ErrorMessage name="email" className="invalid-feedback" />
                   ) : (
                     "Email"
@@ -143,15 +155,22 @@ export const Formiks = () => {
 
             <Col className="formButtons">
               <Link to="/">
-                <Button variant="secondary" type="submit">
+                <Button variant="secondary">
                   Previous
                 </Button>
               </Link>
-              <Link to="/welcome">
-                <Button variant="primary" type="submit">
+              <ButtonGroup >
+
+              <Button className="mx-2" variant="danger" type="button" onClick={handleReset} disabled={!dirty}>
+                  Reset
+              </Button>
+                {/* <Link to=""> */}
+              <Button variant="primary" type="submit" disabled={!isValid || !dirty}>
                   Next
-                </Button>
-              </Link>
+              </Button>
+              
+                  {/* </Link> */}
+              </ButtonGroup>
             </Col>
           </Row>
         </Form>
