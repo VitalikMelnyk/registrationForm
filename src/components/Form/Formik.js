@@ -9,7 +9,7 @@ import Button from "react-bootstrap/Button";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {Welcome} from './Welcome';
+// import {Welcome} from './Welcome';
 
 import "./SectionForm.scss";
 
@@ -47,8 +47,8 @@ export const Formiks = () => {
       onSubmit={(fields) => {
         
         console.log(fields);
-        return <Welcome />
-        // alert("SUCCESS!! :-)\n\n" + JSON.stringify(fields, null, 4));
+        // return <Welcome />
+        alert("SUCCESS!! :-)\n\n" + JSON.stringify(fields, null, 4));
       }}
       render={({ errors, isValid, touched, handleSubmit, handleReset, dirty }) => (
         <Form className="form" onSubmit={handleSubmit}>
