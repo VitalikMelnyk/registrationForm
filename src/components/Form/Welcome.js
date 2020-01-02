@@ -34,7 +34,7 @@ export const Welcome = () => {
                 Go to dashboard
               </Link>
               <Link to="/" className="btn btn-outline-primary">
-                return
+                Return
               </Link>
         
           </Col>

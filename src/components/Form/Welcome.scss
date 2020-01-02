@@ -29,7 +29,19 @@
 
 .welcome-btn {
     // max-height: fit-content;
-    // display: flex;
-    // flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    // width: 50%;
+    align-items: center;
     text-align: center;
+    padding-top: 50px;
+}
+
+.welcome-btn a {
+    width: 50%;
+    padding: 10px;
+}
+
+.welcome-btn a:first-child {
+    margin-bottom: 10px;
 }
