@@ -38,4 +38,17 @@ app.post("/users", (req, res) => {
     return res.send('Saved successfully!');
 });
 
+app.get('/dashboard', (req, res) => {
+    let retrievedData = 'SELECT * FROM user ORDER BY id';
+    console.log(retrievedData);
+    connect.query(retrievedData, function (err, result, fields) {
+        if(err) {
+            throw err;
+        }
+        console.log(result);
+        return res.send(result);
+        
+    })
+})
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
