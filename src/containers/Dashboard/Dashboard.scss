@@ -45,19 +45,17 @@
       }
     }
   }
-};
+}
 
 // Экстрамалые девайсы («портретные телефоны», < 576px)
 @media (max-width: 575.98px) {
   .dashboard {
-
     &-title {
-        font-size: 2rem;
+      font-size: 2rem;
     }
 
     &-usersTable {
       grid-template-columns: repeat(1, 1fr);
-      
     }
   }
 }

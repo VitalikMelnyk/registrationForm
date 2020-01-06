@@ -2,41 +2,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-
 // connect Formik
 import { Formik, Field, Form, ErrorMessage } from "formik";
-// Connect Yup
-import * as Yup from "yup";
-
 // Connect Bootstrap
 import ButtonGroup from "react-bootstrap/ButtonGroup";
-import Button from "react-bootstrap/Button";
-import ProgressBar from "react-bootstrap/ProgressBar";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-// import {Welcome} from './Welcome';
-
+import {SignupScheme} from '../../shared/schemes';
+import { LinkButton } from "../../components/Buttons/LinkButton";
+import { ProgressBars } from "../../components/ProgressBar/ProgressBar";
 // Connect scss files
-import "./SectionForm.scss";
-import { LinkButton } from "./Buttons/LinkButton";
-import { ProgressBars } from "./ProgressBar/ProgressBar";
+import "./Formik.scss";
+// Connect server url
+import {SERVER_URL} from '../../shared/serverUrl';
 
-// =----------- CONSTANTS ------------------->
+// // =----------- CONSTANTS ------------------->
+// const SERVER_URL = "http://localhost:3002";
 
-// Yup validation
-const SignupScheme = Yup.object().shape({
-  email: Yup.string()
-    .email("Email is invalid")
-    .required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Confirm Password is required")
-});
 
-const URL_USERS = "http://localhost:3002/users";
 
 // Component
 export const Formiks = props => {
@@ -49,7 +32,7 @@ export const Formiks = props => {
     if (dataFiedls) {
       // alert("SUCCESS!! :-)\n\n" + JSON.stringify(fields, null, 4));
       axios
-        .post(URL_USERS, dataFiedls)
+        .post(`${SERVER_URL}/users`, dataFiedls)
         .then(res => {
           console.log(res);
           props.history.push("/welcome");
@@ -75,7 +58,6 @@ export const Formiks = props => {
           <Row noGutters={true} className="wrapper">
             <Col className="header">
               <h1 className="header-title">SignUp</h1>
-              {/* <h1 className="form-title">Signup</h1> */}
             </Col>
             <ProgressBars progress={50} />
             <Col className="inputFiels">
@@ -107,8 +89,8 @@ export const Formiks = props => {
               </div>
               {/* ---------------Email -----------------------*/}
 
-              {/* ---------------Password -----------------------*/}
 
+              {/* ---------------Password -----------------------*/}
               <div className="form-group">
                 <label
                   htmlFor="password"
@@ -134,11 +116,11 @@ export const Formiks = props => {
                   }
                 />
               </div>
-
               {/* ---------------Password -----------------------*/}
 
-              {/* ---------------Repeat Password -----------------------*/}
 
+
+              {/* ---------------Repeat Password -----------------------*/}
               <div className="form-group">
                 <label
                   htmlFor="confirmPassword"

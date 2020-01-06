@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import { LinkButton } from "./Buttons/LinkButton";
+import { LinkButton } from "../../components/Buttons/LinkButton";
+import { ProgressBars } from "../../components/ProgressBar/ProgressBar";
 import "./Welcome.scss";
-import { ProgressBars } from "./ProgressBar/ProgressBar";
 
-export const Welcome = () => {
+export const Welcome = props => {
   return (
     <Fragment>
       <Form className="form">
