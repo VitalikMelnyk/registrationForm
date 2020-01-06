@@ -1,11 +1,11 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
-// import Button from "react-bootstrap/Button";
-import ProgressBar from "react-bootstrap/ProgressBar";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import './Welcome.scss';
+import { LinkButton } from "./Buttons/LinkButton";
+import "./Welcome.scss";
+import { ProgressBars } from "./ProgressBar/ProgressBar";
 
 export const Welcome = () => {
   return (
@@ -14,29 +14,24 @@ export const Welcome = () => {
         <Row noGutters={true} className="wrapper">
           <Col className="header">
             <h1 className="header-title">Thank you</h1>
-            {/* <h1 className="form-title">Signup</h1> */}
           </Col>
-          <Col className="progressBar">
-            <ProgressBar animated now={100} className="wrapper-progress" />
-          </Col>
+          <ProgressBars progress={100} />
           <Col className="figure">
             <div className="circle">
-                <div className="rectangle">
-
-                </div>
+              <div className="rectangle"></div>
             </div>
           </Col>
 
           <Col className="welcome-btn">
-           
-        
-              <Link to="/dashboard" className="btn btn-outline-primary">
-                Go to dashboard
-              </Link>
-              <Link to="/" className="btn btn-outline-primary">
-                Return
-              </Link>
-        
+            <Link to="/dashboard">
+              <LinkButton
+                btnType="outline-primary"
+                titleBtn="Go to dashboard"
+              />
+            </Link>
+            <Link to="/">
+              <LinkButton btnType="outline-primary" titleBtn="Return" />
+            </Link>
           </Col>
         </Row>
       </Form>

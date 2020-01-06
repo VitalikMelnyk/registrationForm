@@ -1,10 +1,14 @@
+// Connect libraries
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+
+// connect Formik
 import { Formik, Field, Form, ErrorMessage } from "formik";
+// Connect Yup
 import * as Yup from "yup";
-// import Row from "react-bootstrap/Row";
-// // import Form from "react-bootstrap/Form";
+
+// Connect Bootstrap
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
 import ProgressBar from "react-bootstrap/ProgressBar";
@@ -12,10 +16,14 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 // import {Welcome} from './Welcome';
 
+// Connect scss files
 import "./SectionForm.scss";
+import { LinkButton } from "./Buttons/LinkButton";
+import { ProgressBars } from "./ProgressBar/ProgressBar";
+
+// =----------- CONSTANTS ------------------->
 
 // Yup validation
-
 const SignupScheme = Yup.object().shape({
   email: Yup.string()
     .email("Email is invalid")
@@ -28,6 +36,9 @@ const SignupScheme = Yup.object().shape({
     .required("Confirm Password is required")
 });
 
+const URL_USERS = "http://localhost:3002/users";
+
+// Component
 export const Formiks = props => {
   const handleSubmitting = fields => {
     const dataFiedls = {
@@ -37,10 +48,15 @@ export const Formiks = props => {
     console.log(dataFiedls);
     if (dataFiedls) {
       // alert("SUCCESS!! :-)\n\n" + JSON.stringify(fields, null, 4));
-      axios.post("http://localhost:3002/users", dataFiedls).then(res => {
-        console.log(res);
-      });
-      props.history.push("/welcome");
+      axios
+        .post(URL_USERS, dataFiedls)
+        .then(res => {
+          console.log(res);
+          props.history.push("/welcome");
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   };
 
@@ -61,9 +77,7 @@ export const Formiks = props => {
               <h1 className="header-title">SignUp</h1>
               {/* <h1 className="form-title">Signup</h1> */}
             </Col>
-            <Col className="progressBar">
-              <ProgressBar animated now={50} className="wrapper-progress" />
-            </Col>
+            <ProgressBars progress={50} />
             <Col className="inputFiels">
               {/* ---------------Email -----------------------*/}
               <div className="form-group">
@@ -159,28 +173,22 @@ export const Formiks = props => {
 
             <Col className="formButtons">
               <Link to="/">
-                <Button variant="secondary">Previous</Button>
+                <LinkButton btnType="secondary" titleBtn="Previous" />
               </Link>
               <ButtonGroup>
-                <Button
+                <LinkButton
+                  btnType="danger"
                   className="mx-2"
-                  variant="danger"
-                  type="button"
                   onClick={handleReset}
                   disabled={!dirty}
-                >
-                  Reset
-                </Button>
-                {/* <Link to="/welcome"> */}
-                <Button
-                  variant="primary"
-                  type="submit"
+                  titleBtn="Reset"
+                />
+                <LinkButton
+                  btnType="primary"
+                  onClick={handleSubmit}
                   disabled={!isValid || !dirty}
-                >
-                  Next
-                </Button>
-
-                {/* </Link> */}
+                  titleBtn="Next"
+                />
               </ButtonGroup>
             </Col>
           </Row>

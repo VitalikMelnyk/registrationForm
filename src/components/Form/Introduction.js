@@ -1,38 +1,34 @@
-import React, {Fragment} from 'react';
-import { Link } from 'react-router-dom';
+import React, { Fragment } from "react";
+import { Link } from "react-router-dom";
 // import Button from "react-bootstrap/Button";
-import ProgressBar from "react-bootstrap/ProgressBar";
+// import ProgressBar from "react-bootstrap/ProgressBar";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+// import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-
-import './Introduction.scss';
+import "./Introduction.scss";
+import { LinkButton } from "./Buttons/LinkButton";
+import { ProgressBars } from "./ProgressBar/ProgressBar";
 
 export const Introduction = () => {
-    return (
-        <Fragment>
+  return (
+    <Fragment>
       <Form className="form">
         <Row noGutters={true} className="wrapper">
           <Col className="header">
             <h1 className="header-title">SignUp</h1>
-            {/* <h1 className="form-title">Signup</h1> */}
           </Col>
-          <Col className="progressBar">
-            <ProgressBar animated now={0} className="wrapper-progress" />
-          </Col>
-          
+          <ProgressBars progress={0} />
           <Col className="intro-btn">
             <Form.Group>
-              {/* <Button variant="primary" type="submit" >
-                Begin
-              </Button> */}
               <p>Do you want to create account?</p>
-              
-              <Link to='/auth' className="btn btn-primary">Begin</Link>
+              <Link to="/auth">
+                <LinkButton btnType="primary" titleBtn="Begin" />
+              </Link>
             </Form.Group>
           </Col>
         </Row>
       </Form>
     </Fragment>
-    )
-}
+  );
+};

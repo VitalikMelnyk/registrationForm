@@ -12,43 +12,60 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => res.send("Hello World444!"));
 
-app.post("/users", (req, res) => {
-    // console.log(11111, req)
-
-    console.log("Got body:", req.body);
-    console.log(req.body.email);
+app.post("/users", async (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
-    // let sql = 'INSERT INTO user (email, password) VALUES (' + email + ', ' + password + ')';
-      let sql = 'INSERT INTO user SET ?';
-    let values = {
-        email: email,
-        password: password
+    let confirmPassword = req.body.confirmPassword;
+
+    // check required fields
+    if(!email){
+        return res.status(400).send("Email is required.");  
     }
-    console.log(values);
 
-    connect.query(sql, values, function (err, res) {
-        if (err) {
-            throw err;
+
+
+    // check passwords
+
+    if (password !== confirmPassword) {
+        return res.status(400).send("Passwords not match");
+    }
+
+    try {
+        // check email exist
+        let checkEmailFromDbQuery =
+            "SELECT email FROM user WHERE email='" + email + "'";
+
+        const checkkEmailResult = await connect.query(checkEmailFromDbQuery);
+
+        if (checkkEmailResult && checkkEmailResult.length) {
+            return res.status(400).send("Such email exists");
         }
-        console.log(res);
-        console.log('Record is inserted, ID: ', res.insertId)
-    })
 
-    return res.send('Saved successfully!');
+        // insert user to DB
+        let insertQuery = "INSERT INTO user SET ?";
+        let values = {
+            email: email,
+            password: password
+        };
+        await connect.query(insertQuery, values);
+
+        return res.send("Saved successfully!");
+    } catch (error) {
+        return res.status(500).send(error);
+    }
+
 });
 
-app.get('/dashboard', (req, res) => {
-    let retrievedData = 'SELECT * FROM user ORDER BY id';
+app.get("/dashboard", (req, res) => {
+    let retrievedData = "SELECT * FROM user ORDER BY id";
     console.log(retrievedData);
     connect.query(retrievedData, function (err, result, fields) {
-        if(err) {
+        if (err) {
             throw err;
         }
         console.log(result);
         return res.send(result);
-        
-    })
-})
+    });
+});
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
