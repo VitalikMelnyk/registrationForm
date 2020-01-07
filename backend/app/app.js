@@ -1,12 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-const connect = require("./database");
+const connect = require("../config/database");
 const port = 3002;
 
 // support parsing of application/json type post data
 app.use(bodyParser.json());
-
 //support parsing of application/x-www-form-urlencoded post data
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -22,7 +21,7 @@ app.post("/users", async (req, res) => {
     return res.status(400).send("Email is required.");
   }
   if (!password) {
-    return res.status(400).send("Passy");
+    return res.status(400).send("Password is required.");
   }
 
   // check passwords
@@ -69,3 +68,5 @@ app.get("/dashboard", (req, res) => {
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
+module.exports = app;
