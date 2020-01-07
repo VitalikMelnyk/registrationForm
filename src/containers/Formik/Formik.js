@@ -16,10 +16,6 @@ import "./Formik.scss";
 // Connect server url
 import {SERVER_URL} from '../../shared/serverUrl';
 
-// // =----------- CONSTANTS ------------------->
-// const SERVER_URL = "http://localhost:3002";
-
-
 
 // Component
 export const Formiks = props => {
