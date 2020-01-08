@@ -24,7 +24,7 @@ export default class Dashboard extends Component {
     return (
       <Fragment>
         <div className="dashboard">
-          <Link to="/auth">
+          <Link to="/">
             <LinkButton
               btnType="outline-success"
               className="dashboard-btn"

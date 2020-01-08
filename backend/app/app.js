@@ -1,11 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require('cors');
-
+const cors = require("cors");
+const { handleError, ErrorHandler } = require("./helpers/error");
 const app = express();
 const connect = require("../config/database");
 const port = 3002;
-
 
 app.use(cors());
 // support parsing of application/json type post data
@@ -15,35 +14,38 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => res.send("Hello World444!"));
 
-app.post("/users", async (req, res) => {
+app.post("/users", async (req, res, next) => {
   let email = req.body.email;
   let password = req.body.password;
   let confirmPassword = req.body.confirmPassword;
 
-  // check required fields
-  if (!email) {
-    return res.status(400).send("Email is required.");
-  }
-  if (!password) {
-    return res.status(400).send("Password is required.");
-  }
-
-  // check passwords
-
-  if (password !== confirmPassword) {
-    return res.status(400).send("Passwords not match");
-  }
-
+  // Try_Catch handling
   try {
+    // check required fields
+    try {
+      if (!email) {
+        throw new ErrorHandler(400, "Email is required!");
+      }
+      if (!password) {
+        throw new ErrorHandler(400, "Password is required!");
+      }
+      // check passwords
+      if (password !== confirmPassword) {
+        throw new ErrorHandler(400, "Passwords not match!");
+      }
+    } finally {
+    }
+
     // check email exist
     let checkEmailFromDbQuery =
       "SELECT email FROM user WHERE email='" + email + "'";
-
     const checkkEmailResult = await connect.query(checkEmailFromDbQuery);
-
     if (checkkEmailResult && checkkEmailResult.length) {
-      return res.status(400).send("Such email exists");
+      throw new ErrorHandler(400, "Such email is existed!");
     }
+    // if (!connect.config) {
+    //   throw new ErrorHandler(500, "Not connected to database");
+    // }
 
     // insert user to DB
     let insertQuery = "INSERT INTO user SET ?";
@@ -53,19 +55,28 @@ app.post("/users", async (req, res) => {
     };
     await connect.query(insertQuery, values);
 
-    return res.send("Saved successfully!");
+    return res.send("Saved successfully in database!");
   } catch (error) {
-    return res.status(500).send(error);
+    console.log(error);
+    return handleError(error, res);
   }
 });
 
 app.get("/dashboard", (req, res) => {
+  
   let retrievedData = "SELECT * FROM user ORDER BY id";
   console.log(retrievedData);
   connect.query(retrievedData, function(err, result, fields) {
-    if (err) {
-      throw err;
+    try {
+      if (err) {
+        throw new ErrorHandler(500, "Can't fetch data from database!");
+      }
+      
+    } catch (error) {
+      console.log(error);
+      return handleError(error, res);
     }
+    
     console.log(result);
     return res.send(result);
   });
