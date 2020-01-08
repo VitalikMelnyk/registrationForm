@@ -74,7 +74,7 @@ export const Formiks = props => {
                   type="text"
                   className={
                     "form-control" +
-                    (errors.email && touched.email ? " is-invalid" : "")
+                    (errors.email && touched.email ? "   is-invalid" : "")
                   }
                 />
                 {/* <ErrorMessage
