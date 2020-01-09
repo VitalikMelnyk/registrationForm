@@ -48,22 +48,24 @@ app.post("/users", async (req, res, next) => {
     // }
 
     // insert user to DB
-    let insertQuery = "INSERT INTO user SET ?";
+    let insertQuery = "INSERT INTO users SET ?";
     let values = {
       email: email,
       password: password
     };
-    await connect.query(insertQuery, values);
-
-    return res.send("Saved successfully in database!");
+    await connect.query(insertQuery, values, function(err, result, fields) {
+      if (err) {
+        throw new ErrorHandler(500, "Something wrong with database!");
+      }
+    });
   } catch (error) {
     console.log(error);
     return handleError(error, res);
   }
+  return res.send("Saved successfully in database!");
 });
 
 app.get("/dashboard", (req, res) => {
-  
   let retrievedData = "SELECT * FROM user ORDER BY id";
   console.log(retrievedData);
   connect.query(retrievedData, function(err, result, fields) {
@@ -71,12 +73,11 @@ app.get("/dashboard", (req, res) => {
       if (err) {
         throw new ErrorHandler(500, "Can't fetch data from database!");
       }
-      
     } catch (error) {
       console.log(error);
       return handleError(error, res);
     }
-    
+
     console.log(result);
     return res.send(result);
   });
