@@ -18,7 +18,16 @@ npm run start
 ```
 node index.js
 ```
-5. You need write one user to database and view them on localhost:3000/dashboard
+5. you need to install mysql workbench or other tool for working with Mysql
+6. Create database
+```
+node ./createDB.js
+```
+7. Create table with column and other
+```
+node ./createTable.js
+```
+8. Try to write user to database via the form.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

@@ -3,8 +3,11 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const { handleError, ErrorHandler } = require("./helpers/error");
 const app = express();
-const connect = require("../config/database");
+// const connect = require("../config/database");
+const connect = require('../config/database/connect');
 const port = 3002;
+let database = 'testings';
+// console.log(connect);
 
 app.use(cors());
 // support parsing of application/json type post data
@@ -13,7 +16,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => res.send("Hello World444!"));
-
 app.post("/users", async (req, res, next) => {
   let email = req.body.email;
   let password = req.body.password;
@@ -38,7 +40,7 @@ app.post("/users", async (req, res, next) => {
 
     // check email exist
     let checkEmailFromDbQuery =
-      "SELECT email FROM user WHERE email='" + email + "'";
+      "SELECT email FROM "+database+" WHERE email='" + email + "'";
     const checkkEmailResult = await connect.query(checkEmailFromDbQuery);
     if (checkkEmailResult && checkkEmailResult.length) {
       throw new ErrorHandler(400, "Such email is existed!");
@@ -48,7 +50,7 @@ app.post("/users", async (req, res, next) => {
     // }
 
     // insert user to DB
-    let insertQuery = "INSERT INTO users SET ?";
+    let insertQuery = "INSERT INTO "+database+" SET ?";
     let values = {
       email: email,
       password: password
@@ -57,16 +59,19 @@ app.post("/users", async (req, res, next) => {
       if (err) {
         throw new ErrorHandler(500, "Something wrong with database!");
       }
+      return res.send("Saved successfully in database!");
     });
   } catch (error) {
     console.log(error);
+    
     return handleError(error, res);
+    
   }
-  return res.send("Saved successfully in database!");
+  
 });
 
 app.get("/dashboard", (req, res) => {
-  let retrievedData = "SELECT * FROM user ORDER BY id";
+  let retrievedData = "SELECT * FROM "+database+" ORDER BY id";
   console.log(retrievedData);
   connect.query(retrievedData, function(err, result, fields) {
     try {

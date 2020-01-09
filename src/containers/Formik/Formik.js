@@ -23,6 +23,7 @@ export const Formiks = props => {
     const dataFiedls = {
       ...fields
     };
+    
     // console.log(fields);
     console.log(dataFiedls);
     if (dataFiedls) {
@@ -35,7 +36,10 @@ export const Formiks = props => {
         })
         .catch(err => {
           console.log(err);
+          
+
         });
+      
     }
   };
 
