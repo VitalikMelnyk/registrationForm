@@ -4,9 +4,11 @@ const cors = require("cors");
 const { handleError, ErrorHandler } = require("./helpers/error");
 const app = express();
 // const connect = require("../config/database");
+// const connect = require('../config/database/connect');
 const connect = require('../config/database/connect');
+const {TABLE_NAME} = require('../config/database/constants');
 const port = 3002;
-let database = 'testings';
+// let database = 'testings';
 // console.log(connect);
 
 app.use(cors());
@@ -40,7 +42,7 @@ app.post("/users", async (req, res, next) => {
 
     // check email exist
     let checkEmailFromDbQuery =
-      "SELECT email FROM "+database+" WHERE email='" + email + "'";
+      "SELECT email FROM "+TABLE_NAME+" WHERE email='" + email + "'";
     const checkkEmailResult = await connect.query(checkEmailFromDbQuery);
     if (checkkEmailResult && checkkEmailResult.length) {
       throw new ErrorHandler(400, "Such email is existed!");
@@ -50,7 +52,7 @@ app.post("/users", async (req, res, next) => {
     // }
 
     // insert user to DB
-    let insertQuery = "INSERT INTO "+database+" SET ?";
+    let insertQuery = "INSERT INTO "+TABLE_NAME+" SET ?";
     let values = {
       email: email,
       password: password
@@ -71,7 +73,7 @@ app.post("/users", async (req, res, next) => {
 });
 
 app.get("/dashboard", (req, res) => {
-  let retrievedData = "SELECT * FROM "+database+" ORDER BY id";
+  let retrievedData = "SELECT * FROM "+TABLE_NAME+" ORDER BY id";
   console.log(retrievedData);
   connect.query(retrievedData, function(err, result, fields) {
     try {

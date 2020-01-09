@@ -1,26 +1,45 @@
 const mysql = require("mysql");
-const util = require("util");
+const {MY_SQL_PASSWORD, MY_SQL_USER, DATABASE_NAME, TABLE_NAME} = require('../database/constants');
+// const MY_SQL_PASSWORD = "1111";
+// const MY_SQL_USER = "root";
+// const DATABASE_NAME = "example";
 
-const connect = mysql.createConnection({
+const mySqlConnection = mysql.createConnection({
   host: "127.0.0.1",
-  user: "root",
-  password: "1111",
-  database: "example"
+  user: MY_SQL_USER,
+  password: MY_SQL_PASSWORD,
+  port: 3306
 });
 
-connect.query = util.promisify(connect.query);
+const mySqlDatabaseConnection = mysql.createConnection({
+  host: "127.0.0.1",
+  user: MY_SQL_USER,
+  password: MY_SQL_PASSWORD,
+  database: DATABASE_NAME
+});
 
-connect.connect(function(err) {
-    try {
-      if (err) {
-        throw err;
-      }
-      // throw err;
-      console.log("Database is connected!");
-    } catch (error) {
-      console.log(error);
-    }
+mySqlConnection.connect(function(err) {
+  if (err) throw err;
+  console.log("Connected!");
+  mySqlConnection.query(`CREATE DATABASE ${DATABASE_NAME}`, function(
+    err,
+    result
+  ) {
+    if (err) throw err;
+    console.log("Database created");
+
+    mySqlDatabaseConnection.connect(function(err) {
+      if (err) throw err;
+      console.log("Connected!");
+      const sql =
+        "CREATE TABLE "+TABLE_NAME+" (email VARCHAR(255) NOT NULL, password VARCHAR(45) NOT NULL, id INT(11) NOT NULL AUTO_INCREMENT, PRIMARY KEY (id, email, password), UNIQUE KEY `"+TABLE_NAME+"_email` (`email`))";
+
+      mySqlDatabaseConnection.query(sql, function(err, result) {
+        if (err) throw err;
+        console.log("Table created");
+      });
+    });
   });
-  
-  module.exports = connect;
-  
+});
+
+module.exports = mySqlDatabaseConnection;
