@@ -5,7 +5,7 @@ const { handleError, ErrorHandler } = require("./helpers/error");
 const app = express();
 // const connect = require("../config/database");
 // const connect = require('../config/database/connect');
-const connect = require('../config/database/connect');
+const {mySqlDatabaseConnection} = require('../config/database/mysql');
 const {TABLE_NAME} = require('../config/database/constants');
 const port = 3002;
 // let database = 'testings';
@@ -43,7 +43,7 @@ app.post("/users", async (req, res, next) => {
     // check email exist
     let checkEmailFromDbQuery =
       "SELECT email FROM "+TABLE_NAME+" WHERE email='" + email + "'";
-    const checkkEmailResult = await connect.query(checkEmailFromDbQuery);
+    const checkkEmailResult = await mySqlDatabaseConnection.query(checkEmailFromDbQuery);
     if (checkkEmailResult && checkkEmailResult.length) {
       throw new ErrorHandler(400, "Such email is existed!");
     }
@@ -57,7 +57,7 @@ app.post("/users", async (req, res, next) => {
       email: email,
       password: password
     };
-    await connect.query(insertQuery, values, function(err, result, fields) {
+    await mySqlDatabaseConnection.query(insertQuery, values, function(err, result, fields) {
       if (err) {
         throw new ErrorHandler(500, "Something wrong with database!");
       }
@@ -75,7 +75,7 @@ app.post("/users", async (req, res, next) => {
 app.get("/dashboard", (req, res) => {
   let retrievedData = "SELECT * FROM "+TABLE_NAME+" ORDER BY id";
   console.log(retrievedData);
-  connect.query(retrievedData, function(err, result, fields) {
+  mySqlDatabaseConnection.query(retrievedData, function(err, result, fields) {
     try {
       if (err) {
         throw new ErrorHandler(500, "Can't fetch data from database!");

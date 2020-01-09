@@ -14,14 +14,14 @@ npm install
 ```
 npm run start
 ```
-4. Start localhost:3002 with command line for folder backend
+4. you need to install mysql workbench or other tool for working with Mysql
+5. Create database configuration on folder database
+```
+node 'connect.js' 
+```
+6. Start localhost:3002 with command line for folder backend
 ```
 node index.js
-```
-5. you need to install mysql workbench or other tool for working with Mysql
-6. Create database in folder backend
-```
-node 'index.js'
 ```
 7. Try to write user to database via the form.
 
