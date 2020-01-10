@@ -3,13 +3,9 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const { handleError, ErrorHandler } = require("./helpers/error");
 const app = express();
-// const connect = require("../config/database");
-// const connect = require('../config/database/connect');
-const {mySqlDatabaseConnection} = require('../config/database/mysql');
-const {TABLE_NAME} = require('../config/database/constants');
+const { mySqlDatabaseConnection } = require("../config/database/mysql");
+const { TABLE_NAME } = require("../config/database/constants");
 const port = 3002;
-// let database = 'testings';
-// console.log(connect);
 
 app.use(cors());
 // support parsing of application/json type post data
@@ -42,8 +38,10 @@ app.post("/users", async (req, res, next) => {
 
     // check email exist
     let checkEmailFromDbQuery =
-      "SELECT email FROM "+TABLE_NAME+" WHERE email='" + email + "'";
-    const checkkEmailResult = await mySqlDatabaseConnection.query(checkEmailFromDbQuery);
+      "SELECT email FROM " + TABLE_NAME + " WHERE email='" + email + "'";
+    const checkkEmailResult = await mySqlDatabaseConnection.query(
+      checkEmailFromDbQuery
+    );
     if (checkkEmailResult && checkkEmailResult.length) {
       throw new ErrorHandler(400, "Such email is existed!");
     }
@@ -52,12 +50,16 @@ app.post("/users", async (req, res, next) => {
     // }
 
     // insert user to DB
-    let insertQuery = "INSERT INTO "+TABLE_NAME+" SET ?";
+    let insertQuery = "INSERT INTO " + TABLE_NAME + " SET ?";
     let values = {
       email: email,
       password: password
     };
-    await mySqlDatabaseConnection.query(insertQuery, values, function(err, result, fields) {
+    await mySqlDatabaseConnection.query(insertQuery, values, function(
+      err,
+      result,
+      fields
+    ) {
       if (err) {
         throw new ErrorHandler(500, "Something wrong with database!");
       }
@@ -65,15 +67,13 @@ app.post("/users", async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    
+
     return handleError(error, res);
-    
   }
-  
 });
 
 app.get("/dashboard", (req, res) => {
-  let retrievedData = "SELECT * FROM "+TABLE_NAME+" ORDER BY id";
+  let retrievedData = "SELECT * FROM " + TABLE_NAME + " ORDER BY id";
   console.log(retrievedData);
   mySqlDatabaseConnection.query(retrievedData, function(err, result, fields) {
     try {
