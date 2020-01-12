@@ -7,6 +7,7 @@ const { mySqlDatabaseConnection } = require("../config/database/mysql");
 const { TABLE_NAME } = require("../config/database/constants");
 const port = 3002;
 
+
 app.use(cors());
 // support parsing of application/json type post data
 app.use(bodyParser.json());
@@ -36,20 +37,18 @@ app.post("/users", async (req, res, next) => {
     } finally {
     }
 
-    // check email exist
-    let checkEmailFromDbQuery =
-      `select email from ${TABLE_NAME} where email='${email}'`;
+    
+    // // check email exist
+    let checkEmailFromDbQuery = `select * from ${TABLE_NAME} where email=?`;
+    // let checkEmailFromDbQuery = "select email from user";
     const checkkEmailResult = await mySqlDatabaseConnection.query(
-      checkEmailFromDbQuery
+      checkEmailFromDbQuery, email
     );
     console.log(checkEmailFromDbQuery);
-    console.log(checkkEmailResult);
+    console.log(checkkEmailResult.length);
     if (checkkEmailResult && checkkEmailResult.length) {
       throw new ErrorHandler(400, "Such email is existed!");
     }
-    // if (!connect.config) {
-    //   throw new ErrorHandler(500, "Not connected to database");
-    // }
 
     // insert user to DB
     let insertQuery = `insert into ${TABLE_NAME} set ?`;
@@ -57,16 +56,8 @@ app.post("/users", async (req, res, next) => {
       email: email,
       password: password
     };
-    await mySqlDatabaseConnection.query(insertQuery, values, function(
-      err,
-      result,
-      fields
-    ) {
-      if (err) {
-        throw new ErrorHandler(500, "Something wrong with database!");
-      }
-      return res.send("Saved successfully in database!");
-    });
+    await mySqlDatabaseConnection.query(insertQuery, values);
+    return res.send("Saved successfully in database!");
   } catch (error) {
     console.log(error);
 

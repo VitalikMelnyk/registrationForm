@@ -5,7 +5,6 @@ import DashboardList from "./DashboardList";
 import "./Dashboard.scss";
 // Connect server url
 import { SERVER_URL } from "../../shared/serverUrl";
-
 export default class Dashboard extends Component {
   state = {
     users: []

@@ -1,4 +1,5 @@
 const mysql = require("mysql");
+const  util = require('util');
 const {
   MY_SQL_HOST,
   MY_SQL_PASSWORD,
@@ -24,4 +25,11 @@ const mySqlDatabaseConnection = mysql.createConnection({
   database: DATABASE_NAME
 });
 
-module.exports = { mySqlDatabaseConnection, mySqlConnection };
+// mySqlConnection.query = util.promisify(mySqlConnection.query);
+mySqlDatabaseConnection.query = util.promisify(mySqlDatabaseConnection.query);
+mySqlDatabaseConnection.connect(function(err) {
+  if (err) throw err;
+  console.log("Connected!");
+});
+
+module.exports = { mySqlDatabaseConnection};

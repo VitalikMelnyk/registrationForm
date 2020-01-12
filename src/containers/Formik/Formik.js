@@ -8,14 +8,13 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {SignupScheme} from '../../shared/schemes';
+import { SignupScheme } from "../../shared/schemes";
 import { LinkButton } from "../../components/Buttons/LinkButton";
 import { ProgressBars } from "../../components/ProgressBar/ProgressBar";
 // Connect scss files
 import "./Formik.scss";
 // Connect server url
-import {SERVER_URL} from '../../shared/serverUrl';
-
+import { SERVER_URL } from "../../shared/serverUrl";
 
 // Component
 export const Formiks = props => {
@@ -23,7 +22,7 @@ export const Formiks = props => {
     const dataFiedls = {
       ...fields
     };
-    
+
     // console.log(fields);
     console.log(dataFiedls);
     if (dataFiedls) {
@@ -35,11 +34,23 @@ export const Formiks = props => {
           props.history.push("/welcome");
         })
         .catch(err => {
-          console.log(err);
-          
-
+          if (err.response) {
+            console.log(err.response.data.message);
+            console.log(err.response.status);
+            console.log(err.response.headers);
+          } else if (err.request) {
+            /*
+             * The request was made but no response was received, `error.request`
+             * is an instance of XMLHttpRequest in the browser and an instance
+             * of http.ClientRequest in Node.js
+             */
+            console.log(err.request);
+          } else {
+            // Something happened in setting up the request and triggered an Error
+            console.log("Error", err.message);
+          }
+          console.log(err.config);
         });
-      
     }
   };
 
@@ -89,7 +100,6 @@ export const Formiks = props => {
               </div>
               {/* ---------------Email -----------------------*/}
 
-
               {/* ---------------Password -----------------------*/}
               <div className="form-group">
                 <label
@@ -117,8 +127,6 @@ export const Formiks = props => {
                 />
               </div>
               {/* ---------------Password -----------------------*/}
-
-
 
               {/* ---------------Repeat Password -----------------------*/}
               <div className="form-group">
