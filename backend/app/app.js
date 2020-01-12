@@ -38,10 +38,12 @@ app.post("/users", async (req, res, next) => {
 
     // check email exist
     let checkEmailFromDbQuery =
-      "SELECT email FROM " + TABLE_NAME + " WHERE email='" + email + "'";
+      `SELECT email FROM ${TABLE_NAME} WHERE email='${email}'`;
     const checkkEmailResult = await mySqlDatabaseConnection.query(
       checkEmailFromDbQuery
     );
+    console.log(checkEmailFromDbQuery);
+    console.log(checkkEmailResult);
     if (checkkEmailResult && checkkEmailResult.length) {
       throw new ErrorHandler(400, "Such email is existed!");
     }
