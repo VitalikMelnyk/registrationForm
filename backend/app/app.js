@@ -38,7 +38,7 @@ app.post("/users", async (req, res, next) => {
 
     // check email exist
     let checkEmailFromDbQuery =
-      `SELECT email FROM ${TABLE_NAME} WHERE email='${email}'`;
+      `select email from ${TABLE_NAME} where email='${email}'`;
     const checkkEmailResult = await mySqlDatabaseConnection.query(
       checkEmailFromDbQuery
     );
@@ -52,7 +52,7 @@ app.post("/users", async (req, res, next) => {
     // }
 
     // insert user to DB
-    let insertQuery = "INSERT INTO " + TABLE_NAME + " SET ?";
+    let insertQuery = `insert into ${TABLE_NAME} set ?`;
     let values = {
       email: email,
       password: password
@@ -75,7 +75,7 @@ app.post("/users", async (req, res, next) => {
 });
 
 app.get("/dashboard", (req, res) => {
-  let retrievedData = "SELECT * FROM " + TABLE_NAME + " ORDER BY id";
+  let retrievedData = `select * from ${TABLE_NAME} order by id`;
   console.log(retrievedData);
   mySqlDatabaseConnection.query(retrievedData, function(err, result, fields) {
     try {

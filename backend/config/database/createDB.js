@@ -14,9 +14,8 @@ const mySqlConnection = mysql.createConnection({
   host: MY_SQL_HOST,
   user: MY_SQL_USER,
   password: MY_SQL_PASSWORD,
-  port: 3306, 
+  port: 3306,
   multipleStatements: true
-
 });
 
 const mySqlDatabaseConnection = mysql.createConnection({
@@ -43,11 +42,12 @@ mySqlConnection.connect(function(err) {
       // const sql =
       //   `CREATE TABLE ${TABLE_NAME} email VARCHAR(255), password VARCHAR(45), id INT(11)`;
 
-      let sql = `CREATE TABLE  member (
-        id INT NOT NULL ,
-  email VARCHAR(45) NOT NULL,
-  password VARCHAR(45) NOT NULL,
-    )`;
+      // let sql = `CREATE TABLE  member (id INT NOT NULL, email VARCHAR(45) NOT NULL, password VARCHAR(45) NOT NULL)`;
+      let sql = `create table if not exists ${TABLE_NAME}(
+        id int primary key auto_increment,
+        email varchar(255) not null ,
+        password varchar(255) not null
+    )`
 
       mySqlDatabaseConnection.query(sql, function(err, result) {
         if (err) throw err;
