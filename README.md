@@ -14,11 +14,11 @@ npm install
 ```
 npm run start
 ```
-4. you need install mysql workbench or other tool for working with Mysql
+4. you need install mysql workbench or other tool for working with Mysql. I have 8.0 Mysql version.
 5. You need change host, user, password if necessery in file constants.js
 5. Create database configuration on folder database
 ```
-node 'createDB.js' 
+node createDB.js
 ```
 6. Start localhost:3002 with command line for folder backend
 ```
