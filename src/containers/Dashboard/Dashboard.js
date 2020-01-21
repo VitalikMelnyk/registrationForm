@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { LinkButton } from "../../components/Buttons/LinkButton";
 import DashboardList from "./DashboardList";
 import "./Dashboard.scss";
-
+// Еупккцппцккцкппцкцпцкпкцпцк
 // Connect server url
 import { SERVER_URL } from "../../shared/serverUrl";
 const Dashboard = props => {
