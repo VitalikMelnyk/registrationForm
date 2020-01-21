@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -9,7 +9,7 @@ import "./Introduction.scss";
 
 export const Introduction = props => {
   return (
-    <Fragment>
+    <>
       <Form className="form">
         <Row noGutters={true} className="wrapper">
           <Col className="header">
@@ -26,6 +26,6 @@ export const Introduction = props => {
           </Col>
         </Row>
       </Form>
-    </Fragment>
+    </>
   );
 };

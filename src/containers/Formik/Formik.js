@@ -1,5 +1,5 @@
 // Connect libraries
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 // connect Formik
@@ -45,15 +45,14 @@ export const Formiks = props => {
             setErrorMessage(
               err.message + ": You need to launch backend server"
             );
-          };
-          
+          }
         });
     }
     // });
   };
 
   return (
-    <Fragment>
+    <>
       <Formik
         initialValues={{
           email: "",
@@ -188,6 +187,6 @@ export const Formiks = props => {
       </Formik>
 
       {errorMessage && <h3 className="error"> {errorMessage} </h3>}
-    </Fragment>
+    </>
   );
 };

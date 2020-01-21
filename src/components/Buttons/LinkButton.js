@@ -1,9 +1,9 @@
-import React, { Fragment } from "react";
+import React from "react";
 import Button from "react-bootstrap/Button";
 
 export const LinkButton = props => {
   return (
-    <Fragment>
+    <>
       <Button
         variant={props.btnType}
         className={props.className}
@@ -12,6 +12,6 @@ export const LinkButton = props => {
       >
         {props.titleBtn}
       </Button>
-    </Fragment>
+    </>
   );
 };

@@ -1,11 +1,11 @@
-import React, { Fragment } from "react";
+import React from "react";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Col from "react-bootstrap/Col";
 // import "./../SectionForm.scss";
 
 export const ProgressBars = (props) => {
   return (
-    <Fragment>
+    <>
       <Col className="progressBar">
         <ProgressBar
           animated
@@ -13,6 +13,6 @@ export const ProgressBars = (props) => {
           className="wrapper-progress"
         />
       </Col>
-    </Fragment>
+    </>
   );
 };

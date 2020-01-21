@@ -1,9 +1,9 @@
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
 const DashboardList = ({ title, array, fieldName }) => {
   return (
-    <Fragment>
+    <>
       <ul className="dashboard-list">
         <h3>{title}</h3>
 
@@ -13,7 +13,7 @@ const DashboardList = ({ title, array, fieldName }) => {
           </li>
         ))}
       </ul>
-    </Fragment>
+    </>
   );
 };
 
