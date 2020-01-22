@@ -6,9 +6,11 @@ import { Introduction } from "./containers/Introduction/Introduction";
 import { Welcome } from "./containers/Welcome/Welcome";
 import Dashboard from "./containers/Dashboard/Dashboard";
 
+import './App.scss';
+
 const App = props => {
   return (
-    <Container fluid={true}>
+    <Container fluid={true} className="no-gutters">
       <Switch>
         <Route exact path="/" component={Introduction} />
         <Route path="/auth" component={Formiks} />

@@ -5,9 +5,13 @@
 
 .dashboard {
   margin: 0 auto;
+  min-height: 100vh;
+  background: url('../../assets/trianglify-lowres.png') center no-repeat;
+  background-size: cover;
 
   &-btn {
     margin-top: 1%;
+    margin-left: 1%;
   }
 
   &-title {
@@ -37,12 +41,17 @@
       align-items: center;
       justify-content: center;
       border: 1px solid black;
+      &:hover {
+        background: rgb(55, 119, 47);
+      }
       // justify-content: space-around;
 
       p {
         padding: 10px 0;
         margin: 0;
-      }
+        font-weight: 900;
+        
+      } 
     }
   }
 }
@@ -51,7 +60,7 @@
 @media (max-width: 575.98px) {
   .dashboard {
     &-title {
-      font-size: 2rem;
+      font-size: 1.6rem;
     }
 
     &-usersTable {
