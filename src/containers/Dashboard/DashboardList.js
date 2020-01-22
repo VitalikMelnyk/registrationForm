@@ -8,7 +8,7 @@ const DashboardList = ({ title, array, fieldName }) => {
         <h3>{title}</h3>
 
         {array.map(value => (
-          <li className="list-item" key={value.id}>
+          <li className="list-item" key={value._id}>
             <p>{value[fieldName]}</p>
           </li>
         ))}

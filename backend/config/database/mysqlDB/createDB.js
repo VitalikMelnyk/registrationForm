@@ -1,5 +1,5 @@
 const mysql = require("mysql");
-const  util = require('util');
+// const util = require("util");
 const {
   MY_SQL_HOST,
   MY_SQL_PASSWORD,
@@ -50,7 +50,7 @@ mySqlConnection.connect(function(err) {
         id int primary key auto_increment,
         email varchar(255) not null ,
         password varchar(255) not null
-    )`
+    )`;
 
       mySqlDatabaseConnection.query(sql, function(err, result) {
         if (err) throw err;

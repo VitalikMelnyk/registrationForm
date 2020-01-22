@@ -15,6 +15,7 @@ const handleError = (err, res) => {
   });
 };
 
-module.exports =  {
-     ErrorHandler,handleError
-}
+module.exports = {
+  ErrorHandler,
+  handleError
+};

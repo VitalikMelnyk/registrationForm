@@ -3,10 +3,9 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const { handleError, ErrorHandler } = require("./helpers/error");
 const app = express();
-const { mySqlDatabaseConnection } = require("../config/database/mysql");
-const { TABLE_NAME } = require("../config/database/constants");
+const { mySqlDatabaseConnection } = require("../config/database/mysqlDB/mysql");
+const { TABLE_NAME } = require("../config/database/mysqlDB/constants");
 const port = 3002;
-
 
 app.use(cors());
 // support parsing of application/json type post data
@@ -37,12 +36,12 @@ app.post("/users", async (req, res, next) => {
     } finally {
     }
 
-    
     // // check email exist
     let checkEmailFromDbQuery = `select * from ${TABLE_NAME} where email=?`;
     // let checkEmailFromDbQuery = "select email from user";
     const checkkEmailResult = await mySqlDatabaseConnection.query(
-      checkEmailFromDbQuery, email
+      checkEmailFromDbQuery,
+      email
     );
     console.log(checkEmailFromDbQuery);
     console.log(checkkEmailResult.length);
