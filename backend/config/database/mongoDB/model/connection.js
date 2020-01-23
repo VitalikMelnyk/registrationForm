@@ -12,7 +12,7 @@ const databaseConnection = mongoose.createConnection(
   err => {
     if (err) {
       console.log(
-        "Unable to connect to the server. Please start the server. Error:",
+        "Unable to connect to the database. Please make sure that you have mongo db installed. Also, please make sure that you changed MY_HOST  constant inside constants.js file if it necessary. Error:",
         err
       );
     } else {
