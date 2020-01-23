@@ -11,6 +11,8 @@ import Col from "react-bootstrap/Col";
 import { SignupScheme } from "../../shared/schemes";
 import { LinkButton } from "../../components/Buttons/LinkButton";
 import { ProgressBars } from "../../components/ProgressBar/ProgressBar";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
 // Connect scss files
 import "./Formik.scss";
@@ -20,18 +22,18 @@ import { SERVER_URL } from "../../shared/serverUrl";
 // Component
 export const Formiks = props => {
   const [errorMessage, setErrorMessage] = useState([]);
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
 
   const handleSubmitting = fields => {
     const dataFiedls = {
       ...fields
     };
-
-    // console.log(fields);
     console.log(dataFiedls);
 
-    // setLoading(true, () => {
     if (dataFiedls) {
-      // alert("SUCCESS!! :-)\n\n" + JSON.stringify(fields, null, 4));
       axios
         .post(`${SERVER_URL}/users`, dataFiedls)
         .then(res => {
@@ -45,10 +47,10 @@ export const Formiks = props => {
             setErrorMessage(
               err.message + ": You need to launch backend server"
             );
+            setShow(true);
           }
         });
     }
-    // });
   };
 
   return (
@@ -186,7 +188,19 @@ export const Formiks = props => {
         )}
       </Formik>
 
-      {errorMessage && <h3 className="error"> {errorMessage} </h3>}
+      {errorMessage && (
+        <Modal show={show} onHide={handleClose} animation={true}>
+          <Modal.Header closeButton>
+            <Modal.Title>Error</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{errorMessage}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </>
   );
 };

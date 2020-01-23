@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { handleError, ErrorHandler } = require("./helpers/error");
-const { User } = require("../config/database/mongoDB/model/model");
+const { User } = require("../config/database/mongoDB/model/mongoose");
 const app = express();
 const port = 3002;
 
@@ -71,3 +71,6 @@ app.get("/dashboard", async (req, res) => {
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
+module.exports = app;
+
