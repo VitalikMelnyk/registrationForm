@@ -25,13 +25,13 @@ node createDB.js
 ```
 5. Start localhost:3002 with command line for folder backend 
 ```
-node app-mysql.js
+node index-mysql.js
 ```
 If you want to use **mongoDB** how the main database:<br>
 2. You need install mongoDB. I have 4.2.2 MongoDB version.<Br>
 3. Start localhost:3002 with command line for folder backend
 ```
-node app-mongodb.js
+node index-mongodb.js
 ```
 
 
