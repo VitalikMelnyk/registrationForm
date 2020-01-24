@@ -20,37 +20,15 @@ import "./Formik.scss";
 import { SERVER_URL } from "../../shared/serverUrl";
 
 // Component
-export const Formiks = props => {
-  const [errorMessage, setErrorMessage] = useState([]);
-  const [show, setShow] = useState(false);
+export const AccountFields = props => {
 
-  const handleClose = () => setShow(false);
-  // const handleShow = () => setShow(true);
-
-  const handleSubmitting = fields => {
+  const submitting = fields => {
+    console.log(fields);
     const dataFields = {
       ...fields
     };
-    console.log(dataFields);
-
-    if (dataFields) {
-      axios
-        .post(`${SERVER_URL}/users`, dataFields)
-        .then(res => {
-          console.log(res);
-          console.log(res.status);
-          props.history.push("/welcome");
-        })
-        .catch(err => {
-          console.log(err.message);
-          if (err.message === "Network Error") {
-            setErrorMessage(
-              err.message + ": You need to launch backend server"
-            );
-            setShow(true);
-          }
-        });
-    }
+    props.handleSubmit(dataFields);
+    props.nextStep();
   };
 
   return (
@@ -62,7 +40,7 @@ export const Formiks = props => {
           confirmPassword: ""
         }}
         validationSchema={AccountScheme}
-        onSubmit={handleSubmitting}
+        onSubmit={submitting}
       >
         {({ errors, isValid, touched, handleSubmit, handleReset, dirty }) => (
           <Form className="form">
@@ -70,7 +48,7 @@ export const Formiks = props => {
               <Col className="header">
                 <h1 className="header-title">SignUp</h1>
               </Col>
-              <ProgressBars progress={50} />
+              <ProgressBars progress={25} />
               <Col className="inputFiels">
                 {/* ---------------Email -----------------------*/}
                 <div className="form-group">
@@ -187,20 +165,6 @@ export const Formiks = props => {
           </Form>
         )}
       </Formik>
-
-      {errorMessage && (
-        <Modal show={show} onHide={handleClose} animation={true}>
-          <Modal.Header closeButton>
-            <Modal.Title>Error</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{errorMessage}</Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
     </>
   );
 };

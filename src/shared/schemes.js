@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 // Yup validation
-export const SignupScheme = Yup.object().shape({
+export const AccountScheme = Yup.object().shape({
   email: Yup.string()
     .email("Email is invalid")
     .required("Email is required"),
@@ -11,4 +11,13 @@ export const SignupScheme = Yup.object().shape({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Confirm Password is required")
+});
+
+export const SurveyScheme = Yup.object().shape({
+  birthday: Yup.string().required("Birthday is required"),
+  city: Yup.string().required("City is required"),
+  age: Yup.string()
+    .required("Age is required")
+    // .positive("Age must be a positive number.")
+    // .integer("Age must be a integer number.")
 });
