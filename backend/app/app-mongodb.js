@@ -20,6 +20,9 @@ app.post("/users", async (req, res, next) => {
   let email = req.body.email;
   let password = req.body.password;
   let confirmPassword = req.body.confirmPassword;
+  let birthday = req.body.birthday;
+  let city = req.body.city;
+  let age = req.body.age;
 
   try {
     // check required fields
@@ -46,7 +49,10 @@ app.post("/users", async (req, res, next) => {
 
     let values = {
       email: email,
-      password: password
+      password: password,
+      birthday: birthday,
+      city: city,
+      age: age
     };
     let insertUser = await User.create(values, (err, result) => {
       if (err) {
