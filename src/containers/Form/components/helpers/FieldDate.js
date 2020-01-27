@@ -3,7 +3,6 @@ import React from "react";
 import { connect, ErrorMessage, Field } from "formik";
 import { Picker } from "./Picker";
 
-
 export const FieldDate = connect(props => {
   const { errors, touched } = props.formik;
   const { ...inputProps } = props;
@@ -25,9 +24,7 @@ export const FieldDate = connect(props => {
             [inputProps.labels]
           )}
         </label>
-        <Field
-          component={Picker} name="date" 
-        />
+        <Field component={Picker} name="date" />
       </div>
     </>
   );

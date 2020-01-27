@@ -18,6 +18,9 @@ app.post("/users", async (req, res, next) => {
   let email = req.body.email;
   let password = req.body.password;
   let confirmPassword = req.body.confirmPassword;
+  let date = req.body.date;
+  let city = req.body.city;
+  let gender = req.body.gender;
 
   // Try_Catch handling
   try {
@@ -32,6 +35,15 @@ app.post("/users", async (req, res, next) => {
       // check passwords
       if (password !== confirmPassword) {
         throw new ErrorHandler(400, "Passwords not match!");
+      }
+      if (!city) {
+        throw new ErrorHandler(400, "City is required!");
+      }
+      if (!gender) {
+        throw new ErrorHandler(400, "Gender is required!");
+      }
+      if (!date) {
+        throw new ErrorHandler(400, "Date of birth is required!");
       }
     } finally {
     }
@@ -53,7 +65,10 @@ app.post("/users", async (req, res, next) => {
     let insertQuery = `insert into ${TABLE_NAME} set ?`;
     let values = {
       email: email,
-      password: password
+      password: password,
+      city: city,
+      date: date,
+      gender: gender
     };
     await mySqlDatabaseConnection.query(insertQuery, values);
     return res.send("Saved successfully in database!");

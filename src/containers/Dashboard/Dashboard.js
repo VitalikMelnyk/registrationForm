@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { LinkButton } from "../../components/Buttons/LinkButton";
-import DashboardList from "./DashboardList";
 import "./Dashboard.scss";
 // Connect server url
 import { SERVER_URL } from "../../shared/serverUrl";
-const Dashboard = props => {
+export const Dashboard = props => {
   const [users, setUsers] = useState([]);
 
   const getData = async () => {
@@ -19,7 +18,7 @@ const Dashboard = props => {
   useEffect(() => {
     getData();
   }, []);
-
+  console.log(props);
   return (
     <>
       <div className="dashboard">
@@ -29,18 +28,39 @@ const Dashboard = props => {
             className="dashboard-btn"
             titleBtn="Begin"
           />
-          
         </Link>
         <h1 className="dashboard-title text-center">
           List of registered users
         </h1>
-        <div className="dashboard-usersTable">
-          <DashboardList array={users} fieldName="email" title="Email" />
-          <DashboardList array={users} fieldName="password" title="Password" />
+        <div className="container">
+          <div className="dashboard-board row no-gutters">
+            {users.map(user => (
+              <div key={user._id} className="col-12 col-lg board-item">
+                <div className="board-item-section">
+                  <p className="title">Email: </p>
+                  <p className="description">{user.email}</p>
+                </div>
+                <div className="board-item-section">
+                  <p className="title">Password: </p>
+                  <p className="description">{user.password}</p>
+                </div>
+                <div className="board-item-section">
+                  <p className="title">City: </p>
+                  <p className="description">{user.city}</p>
+                </div>
+                <div className="board-item-section">
+                  <p className="title">Date of birth: </p>
+                  <p className="description">{user.date}</p>
+                </div>
+                <div className="board-item-section">
+                  <p className="title">Gender: </p>
+                  <p className="description">{user.gender}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>
   );
 };
-
-export default Dashboard;

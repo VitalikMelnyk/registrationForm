@@ -12,20 +12,11 @@ import { FieldInput } from "./helpers/FieldInput";
 import { AccountScheme } from "../../../shared/schemes";
 // Connect scss files
 import "./Form.scss";
-// Connect server url
-// import { SERVER_URL } from "../../shared/serverUrl";
+
 // Component
 export const AccountFields = props => {
-  console.log(33333, props);
-
   const handleSubmitting = fields => {
-    const dataFields = {
-      ...fields
-    };
-    console.log(dataFields);
-    console.log(props);
-
-    props.handleSubmit(dataFields);
+    props.handleSubmit(fields, false);
     props.nextStep();
   };
 
@@ -45,11 +36,9 @@ export const AccountFields = props => {
             <Col className="inputFiels">
               {/* ---------------Email -----------------------*/}
               <FieldInput type="text" name="email" labels="Email" />
-              {/* ---------------Email -----------------------*/}
 
               {/* ---------------Password -----------------------*/}
               <FieldInput type="password" name="password" labels="Password" />
-              {/* ---------------Password -----------------------*/}
 
               {/* ---------------Repeat Password -----------------------*/}
               <FieldInput
@@ -57,7 +46,6 @@ export const AccountFields = props => {
                 name="confirmPassword"
                 labels="Confirm Password"
               />
-              {/* ---------------Repeat Password -----------------------*/}
             </Col>
 
             <Col className="formButtons">

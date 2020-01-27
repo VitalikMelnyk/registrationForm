@@ -6,7 +6,7 @@
 .dashboard {
   margin: 0 auto;
   min-height: 100vh;
-  background: url('../../assets/trianglify-lowres.png') center no-repeat;
+  background: url("../../assets/trianglify-lowres.png") center no-repeat;
   background-size: cover;
 
   &-btn {
@@ -19,6 +19,36 @@
     padding-top: 2%;
     padding-bottom: 2%;
   }
+  &-board {
+    display: flex;
+    // flex-wrap: wrap;
+
+    .board-item {
+      border: 1px solid black;
+      padding: 15px;
+      margin: 0 10px 0 0;
+
+      &-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        // border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        p {
+          margin: 0;
+        }
+        .title {
+          font-weight: 900;
+          margin-right: 20px;
+        }
+        .description {
+          font-weight: 700;
+        }
+        // justify-content: space-between;
+      }
+    }
+  }
+
   &-usersTable {
     border: 1px solid black;
     margin: 0 5%;
@@ -44,14 +74,12 @@
       &:hover {
         background: rgb(55, 119, 47);
       }
-      // justify-content: space-around;
 
       p {
         padding: 10px 0;
         margin: 0;
         font-weight: 900;
-        
-      } 
+      }
     }
   }
 }

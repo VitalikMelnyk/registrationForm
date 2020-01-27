@@ -49,7 +49,10 @@ mySqlConnection.connect(function(err) {
       let sql = `create table if not exists ${TABLE_NAME}(
         id int primary key auto_increment,
         email varchar(255) not null ,
-        password varchar(255) not null
+        password varchar(255) not null,
+        city varchar(255) not null,
+        date varchar(255) not null,
+        gender varchar(255) not null
     )`;
 
       mySqlDatabaseConnection.query(sql, function(err, result) {

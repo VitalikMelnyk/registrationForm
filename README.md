@@ -34,6 +34,13 @@ If you want to use **mongoDB** how the main database:<br>
 node index-mongodb.js
 ```
 
+If you want to use **mongoDB Atlas** how the main database:<br>
+2. All needed constants that you maybe need to change is located in folder mongo-cluster constants.js <br>
+3. Start localhost:3002 with command line for folder backend
+```
+node index-mongodb-cluster.js
+```
+
 
 ** Try to write user to database via the form.**
 

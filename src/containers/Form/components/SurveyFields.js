@@ -20,13 +20,8 @@ import "./Form.scss";
 export const SurveyFields = props => {
   const handleSubmitting = fields => {
     console.log(fields);
-    const dataFields = {
-      ...fields
-    };
-    props.handleSubmit(dataFields);
-    // props.nextStep(props.data);
+    props.handleSubmit(fields, true);
   };
-
 
   return (
     <>
@@ -45,16 +40,13 @@ export const SurveyFields = props => {
               <Col className="inputFiels">
                 {/* ---------------City -----------------------*/}
                 <FieldInput type="text" name="city" labels="City" />
-                {/* ---------------City -----------------------*/}
 
                 {/* ---------------DatePicker -----------------------*/}
                 <FieldDate name="date" labels="Date" />
-                {/* ---------------DatePicker -----------------------*/}
 
                 {/* ---------------Select gender -----------------------*/}
-                {/* <FieldInput type="text" name="age" labels="Age" /> */}
+
                 <FieldSelect as="select" name="gender" labels="Gender" />
-                {/* ---------------Select gender -----------------------*/}
               </Col>
 
               <Col className="formButtons">

@@ -20,7 +20,9 @@ app.post("/users", async (req, res, next) => {
   let email = req.body.email;
   let password = req.body.password;
   let confirmPassword = req.body.confirmPassword;
-
+  let date = req.body.date;
+  let city = req.body.city;
+  let gender = req.body.gender;
   try {
     // check required fields
     try {
@@ -34,6 +36,15 @@ app.post("/users", async (req, res, next) => {
       if (password !== confirmPassword) {
         throw new ErrorHandler(400, "Passwords not match!");
       }
+      if (!city) {
+        throw new ErrorHandler(400, "City is required!");
+      }
+      if (!gender) {
+        throw new ErrorHandler(400, "Gender is required!");
+      }
+      if (!date) {
+        throw new ErrorHandler(400, "Date of birth is required!");
+      }
     } finally {
     }
 
@@ -46,7 +57,10 @@ app.post("/users", async (req, res, next) => {
 
     let values = {
       email: email,
-      password: password
+      password: password,
+      city: city,
+      date: date,
+      gender: gender
     };
     let insertUser = await User.create(values, (err, result) => {
       if (err) {
@@ -73,4 +87,3 @@ app.get("/dashboard", async (req, res) => {
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 module.exports = app;
-

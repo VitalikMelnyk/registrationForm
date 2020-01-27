@@ -17,6 +17,4 @@ export const SurveyScheme = Yup.object().shape({
   date: Yup.string().required("Date is required"),
   city: Yup.string().required("City is required"),
   gender: Yup.string().required("Gender is required")
-  // .positive("Age must be a positive number.")
-  // .integer("Age must be a integer number.")
 });
