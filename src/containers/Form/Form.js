@@ -38,7 +38,7 @@ export const Form = props => {
         .then(res => {
           console.log(res);
           console.log(res.status);
-          nextStep(step + 1);
+          nextStep();
         })
         .catch(err => {
           console.log(err.message);
@@ -72,21 +72,20 @@ export const Form = props => {
             handleSubmit={handleSubmit}
             prevStep={prevStep}
             nextStep={nextStep}
-            data={data}
           />
         );
       case 3:
         return (
           <SurveyFields
             handleSubmit={handleSubmit}
-            data={data}
             prevStep={prevStep}
             error={{ errorMessage, show, handleClose }}
           />
         );
       case 4:
-        return <Welcome></Welcome>;
+        return <Welcome />;
       default:
+        return;
     }
   };
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const passwordHash = require('password-hash');
 const cors = require("cors");
 const { handleError, ErrorHandler } = require("./helpers/error");
 const { User } = require("../config/database/mongo-cluster/cluster");
@@ -55,9 +56,13 @@ app.post("/users", async (req, res, next) => {
       throw new ErrorHandler(400, "Such email is existed!");
     }
 
+    // Hash password
+    let hashedPassword =  passwordHash.generate(password);
+    // console.log(passwordHash.verify(password, hashedPassword));
+
     let values = {
       email: email,
-      password: password,
+      password: hashedPassword,
       city: city,
       date: date,
       gender: gender

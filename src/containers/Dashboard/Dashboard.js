@@ -41,10 +41,6 @@ export const Dashboard = props => {
                   <p className="description">{user.email}</p>
                 </div>
                 <div className="board-item-section">
-                  <p className="title">Password: </p>
-                  <p className="description">{user.password}</p>
-                </div>
-                <div className="board-item-section">
                   <p className="title">City: </p>
                   <p className="description">{user.city}</p>
                 </div>
