@@ -18,3 +18,13 @@ export const SurveyScheme = Yup.object().shape({
   city: Yup.string().required("City is required"),
   gender: Yup.string().required("Gender is required")
 });
+
+
+export const AuthScheme = Yup.object().shape({
+  email: Yup.string()
+    .email("Email is invalid")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required")
+});

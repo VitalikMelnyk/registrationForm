@@ -7,7 +7,7 @@ import { SurveyFields } from "./components/SurveyFields";
 import { ProgressBars } from "../../components/ProgressBar/ProgressBar";
 
 import { Welcome } from "../Welcome/Welcome";
-import { Introduction } from "../Introduction/Introduction";
+import Introduction from "../Introduction/Introduction";
 // Connect server url
 import { SERVER_URL } from "../../shared/serverUrl";
 const STEP_TOTAL = 4;
@@ -89,11 +89,18 @@ export const Form = props => {
     }
   };
 
+  const switchTitle = step => {
+    if (step === 1) {
+      return <h1 className="header-title">Sign In</h1>;
+    }
+    return <h1 className="header-title">Sign Up</h1>;
+  };
+
   return (
     <div className="form">
       <Row className="wrapper no-gutters">
         <Col className="header">
-          <h1 className="header-title">SignUp</h1>
+          {switchTitle(step)}
           <ProgressBars progress={(step / STEP_TOTAL) * 100} />
         </Col>
         {renderForm()}

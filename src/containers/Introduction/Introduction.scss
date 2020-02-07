@@ -1,13 +1,44 @@
-.intro-btn {
+.form {
+  .wrapper {
+    .auth {
+      padding: 50px 0 0;
+      .inputFiels {
+       
+        margin-bottom: 0;
+      }
+
+      &-buttons {
+        max-height: fit-content;
+        display: flex;
+        justify-content: center;
+        padding-right: 0.5rem;
+        padding-top: 1.5rem;
+        padding-bottom: 1rem;
+        padding-left: 0.5rem;
+        border-bottom: 1px solid #000;
+      }
+    }
+  }
+}
+
+.intro {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   p {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: 700;
     text-align: center;
     text-transform: uppercase;
   }
-  .form-group {
-    text-align: center;
+  &-btn {
+    display: flex;
+    flex-direction: column;
+
+    button {
+      min-width: 75px;
+      margin-bottom: 10px;
+    }
   }
 }
