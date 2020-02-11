@@ -9,9 +9,9 @@ const cors = require("cors");
 const { handleError, ErrorHandler } = require("./helpers/error");
 const { User } = require("../config/database/mongoDB/model/mongoose");
 // const { withAuth } = require("./helpers/withAuth");
-const app = express();
 const port = 3002;
 const jwtKey = "my_secret_key";
+const app = express();
 
 mongoose.set("useCreateIndex", true);
 app.use(cors());
@@ -21,7 +21,6 @@ app.use(cookieParser());
 //support parsing of application/x-www-form-urlencoded post data
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => res.send("Hello World444!"));
 app.post("/users", async (req, res, next) => {
   console.log(req.body);
   const { email, password, confirmPassword, date, city, gender } = req.body;
@@ -51,7 +50,7 @@ app.post("/users", async (req, res, next) => {
     }
 
     // Check email exist
-    let checkEmailFromDB = await User.findOne({ email });
+    let checkEmailFromDB = await User.find({ email });
     console.log(checkEmailFromDB);
     if (checkEmailFromDB && checkEmailFromDB.length) {
       throw new ErrorHandler(400, "Such email is existed!");
@@ -112,10 +111,17 @@ app.post("/auth", async (req, res, next) => {
     if (emailFromDB && verifyPassword) {
       const token = jwt.sign({ emailFromDB }, jwtKey, {
         algorithm: "HS256",
-        expiresIn: "2d"
+        expiresIn: "1h"
       });
       console.log("Token:", token);
-      return res.cookie("token", token, { httpOnly: true }).sendStatus(200);
+      // return res
+      //   .cookie("token", token, {
+      //     httpOnly: true,
+      //     secure: true,
+      //     sameSite: true
+      //   })
+      //   .sendStatus(200);
+      return res.send(token);
     }
   } catch (error) {
     console.log(error);
@@ -131,6 +137,37 @@ app.get("/dashboard", async (req, res) => {
   // console.log(users);
   return res.status(200).send(users);
 });
+
+app.get(
+  "/checkToken",
+  (req, res, next) => {
+    const token =
+      req.body.token ||
+      req.query.token ||
+      req.headers["x-access-token"] ||
+      req.cookies.token;
+
+    if (!token) {
+      res.status(401).send("Unauthorized: No token provided");
+    } else {
+      jwt.verify(token, jwtKey, function(err, decoded) {
+        if (err) {
+          res.status(401).send("Unauthorized: Invalid token");
+        } else {
+          req.email = decoded.email;
+          next();
+        }
+      });
+    }
+  },
+  (req, res) => {
+    return res.sendStatus(200);
+  }
+);
+// app.use(withAuth);
+// app.get('/checkToken', withAuth, function(req, res) {
+//   res.sendStatus(200);
+// });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import axios from "axios";
 // connect Formik
 import { Formik } from "formik";
@@ -13,8 +14,10 @@ import { AuthScheme } from "../../shared/schemes";
 import "./Introduction.scss";
 
 import { SERVER_URL } from "../../shared/serverUrl";
+import { ModalMessage } from "../Form/components/helpers/ModalMessage";
 
 const Introduction = props => {
+  const [cookies, setCookie] = useCookies([]);
   const handleSubmitting = fields => {
     // console.log(fields);
     if (fields) {
@@ -23,15 +26,30 @@ const Introduction = props => {
 
         .then(res => {
           console.log(res);
-          console.log(res.body);
 
           if (res.status === 200) {
-            // console.log(res.status);
-            props.history.push("dashboard");
+            setCookie("token", res.data);
+            console.log("Cookies: ", cookies);
+            let token = cookies;
+            // const token = false;
+            console.log(token);
+            if (!token) {
+              console.log("Token is null");
+            } else {
+              props.history.push("dashboard");
+              console.log("success");
+            }
           }
         })
         .catch(err => {
-          console.log(err.message);
+          console.log(err);
+          console.log(err.response.status);
+          if (err.response.status === 400) {
+            props.error.setErrorMessage(
+              err.message + ": Incorect email or password"
+            );
+            props.error.setShow(true);
+          }
         });
     }
   };
@@ -83,6 +101,11 @@ const Introduction = props => {
           </Button>
         </div>
       </Col>
+      <ModalMessage
+        errorMessage={props.error.errorMessage}
+        show={props.error.show}
+        handleClose={props.error.handleClose}
+      />
     </>
   );
 };

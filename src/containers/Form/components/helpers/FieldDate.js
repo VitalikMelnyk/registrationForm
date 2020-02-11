@@ -6,7 +6,7 @@ import { Picker } from "./Picker";
 export const FieldDate = connect(props => {
   const { errors, touched } = props.formik;
   const { ...inputProps } = props;
-
+  console.log(errors);
   return (
     <>
       <div className="form-group">

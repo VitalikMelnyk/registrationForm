@@ -10,14 +10,13 @@ import { Welcome } from "../Welcome/Welcome";
 import Introduction from "../Introduction/Introduction";
 // Connect server url
 import { SERVER_URL } from "../../shared/serverUrl";
-const STEP_TOTAL = 4;
+const STEP_TOTAL = 3;
 
 export const Form = props => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [data, setData] = useState({});
   const [errorMessage, setErrorMessage] = useState([]);
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   // const handleShow = () => setShow(true);
 
@@ -29,10 +28,15 @@ export const Form = props => {
     setStep(step - 1);
   };
 
+  const resetStep = () => {
+    setStep(0);
+  };
+
   const sendData = latestData => {
     setData(latestData);
     // console.log(data);
     if (latestData) {
+      // latest.data = latestData.date.to
       axios
         .post(`${SERVER_URL}/users`, latestData)
         .then(res => {
@@ -64,9 +68,20 @@ export const Form = props => {
 
   const renderForm = () => {
     switch (step) {
+      case 0:
+        return (
+          <Introduction
+            nextStep={nextStep}
+            error={{
+              errorMessage,
+              setErrorMessage,
+              setShow,
+              show,
+              handleClose
+            }}
+          />
+        );
       case 1:
-        return <Introduction nextStep={nextStep} />;
-      case 2:
         return (
           <AccountFields
             handleSubmit={handleSubmit}
@@ -74,7 +89,7 @@ export const Form = props => {
             nextStep={nextStep}
           />
         );
-      case 3:
+      case 2:
         return (
           <SurveyFields
             handleSubmit={handleSubmit}
@@ -82,15 +97,15 @@ export const Form = props => {
             error={{ errorMessage, show, handleClose }}
           />
         );
-      case 4:
-        return <Welcome />;
+      case 3:
+        return <Welcome resetStep={resetStep} />;
       default:
         return;
     }
   };
 
   const switchTitle = step => {
-    if (step === 1) {
+    if (step === 0) {
       return <h1 className="header-title">Sign In</h1>;
     }
     return <h1 className="header-title">Sign Up</h1>;

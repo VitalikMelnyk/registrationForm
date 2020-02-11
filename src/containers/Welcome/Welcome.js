@@ -1,10 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import { LinkButton } from "../../components/Buttons/LinkButton";
 import "./Welcome.scss";
 
-export const Welcome = props => {
+export const Welcome = ({ resetStep }) => {
   return (
     <>
       <Col className="figure">
@@ -14,9 +13,11 @@ export const Welcome = props => {
       </Col>
 
       <Col className="welcome-btn">
-        <Link to="/dashboard">
-          <LinkButton btnType="outline-primary" titleBtn="Go to dashboard" />
-        </Link>
+        <LinkButton
+          btnType="outline-primary"
+          titleBtn="Want to Sign In?"
+          onClick={resetStep}
+        />
       </Col>
     </>
   );

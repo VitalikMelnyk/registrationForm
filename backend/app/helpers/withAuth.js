@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const secret = "my_secret_key";
 
-const withAuth = function(req, res, next) {
+const withAuth = (req, res, next) => {
   const token =
     req.body.token ||
     req.query.token ||
