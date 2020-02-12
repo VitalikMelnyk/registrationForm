@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const { handleError, ErrorHandler } = require("./helpers/error");
 const { User } = require("../config/database/mongoDB/model/mongoose");
-// const { withAuth } = require("./helpers/withAuth");
+const { redisClient } = require("../config/database/redis/connect");
 const port = 3002;
 const jwtKey = "my_secret_key";
 const app = express();
@@ -66,22 +66,58 @@ app.post("/users", async (req, res, next) => {
       });
     });
 
-    let values = {
+    const values = {
       email: email,
       password: hashedPassword,
       date: date,
       city: city,
       gender: gender
     };
-    let insertUser = await User.create(values, (err, result) => {
-      if (err) {
-        console.log(err);
-      }
+    const createUserAndGenerateToken = await new Promise((resolve, reject) => {
+      User.insertMany(values, async (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        const getUser = await User.findOne({ email });
+        const {
+          email: emailFromDB,
+          password: passwordFromDB,
+          id: userId
+        } = getUser;
+        // console.log(emailFromDB);
+        // console.log(passwordFromDB);
+        const verifyPassword = await new Promise((resolve, reject) => {
+          bcrypt.compare(password, passwordFromDB, (err, success) => {
+            if (err) {
+              console.log(err);
+            }
+            resolve(success);
+          });
+        });
+        // Generate token to client
+        if (emailFromDB && verifyPassword) {
+          const token = jwt.sign({ userId }, jwtKey, {
+            algorithm: "HS256",
+            expiresIn: "1h"
+          });
+          console.log("Token:", token);
+          const redisToken = {
+            userId,
+            token
+          };
+          console.log(redisToken);
+          resolve(redisToken);
+        }
+      });
     });
-    return res.send(insertUser);
+    console.log(createUserAndGenerateToken);
+    const { userId, token } = createUserAndGenerateToken;
+    // set to redis
+    redisClient.set(userId, token);
+    console.log(redisClient.get(userId));
+    return res.send(createUserAndGenerateToken);
   } catch (error) {
     console.log(error);
-
     return handleError(error, res);
   }
 });
@@ -115,24 +151,13 @@ app.post("/auth", async (req, res, next) => {
         expiresIn: "1h"
       });
       console.log("Token:", token);
-
       return res.send(token);
     }
   } catch (error) {
     console.log(error);
-
     return handleError(error, res);
   }
 });
-
-app.get("/dashboard", async (req, res) => {
-  let users = await User.find({}, err => {
-    if (err) return console.log(err);
-  });
-  // console.log(users);
-  return res.status(200).send(users);
-});
-
 const verifySync = async (token, jwtKey) => {
   return new Promise((resolve, reject) => {
     jwt.verify(token, jwtKey, (err, decoded) => {
@@ -153,7 +178,6 @@ const isAuth = async (req, res, next) => {
   } else {
     const decodedData = await verifySync(token, jwtKey);
     const user = await User.findOne({ email: decodedData.emailFromDB });
-
     if (user) {
       next();
     } else {
@@ -163,6 +187,13 @@ const isAuth = async (req, res, next) => {
 };
 app.post("/checkToken", isAuth, (req, res) => {
   return res.sendStatus(200);
+});
+
+app.get("/dashboard", async (req, res) => {
+  let users = await User.find({}, err => {
+    if (err) return console.log(err);
+  });
+  return res.status(200).send(users);
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
