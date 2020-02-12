@@ -1,28 +1,48 @@
 import React, { useState, useEffect } from "react";
-// import { useCookies } from "react-cookie";
+import { withCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 import { LinkButton } from "../../components/Buttons/LinkButton";
 import "./Dashboard.scss";
 // Connect server url
 import { SERVER_URL } from "../../shared/serverUrl";
-export const Dashboard = props => {
+import axios from "axios";
+// import { getRegisteredUsers } from "../../utils/api";
+export const Dashboard = withCookies(props => {
   const [users, setUsers] = useState([]);
-  // const [cookies] = useCookies(["token"]);
-  // console.log(cookies);
 
-  const getData = async () => {
-    const url = `${SERVER_URL}/dashboard`;
-    const response = await fetch(url);
-    const data = await response.json();
-    // console.log(data);
+  const getData = () => {
+    axios
+      .all([
+        axios.get(`${SERVER_URL}/dashboard`),
+        axios.post(
+          `${SERVER_URL}/checkToken`,
+          {},
+          {
+            headers: {
+              "x-auth": `${props.cookies.get("token")}`
+            }
+          }
+        )
+      ])
+      .then(
+        axios.spread((dashboard, checkToken) => {
+          console.log(dashboard);
+          console.log(checkToken);
 
-    setUsers(data);
+          if (checkToken.status === 200) {
+            const users = dashboard.data;
+            setUsers(users);
+          }
+        })
+      )
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {
     getData();
   }, []);
-  // console.log(props);
   return (
     <>
       <div className="dashboard">
@@ -64,4 +84,4 @@ export const Dashboard = props => {
       </div>
     </>
   );
-};
+});

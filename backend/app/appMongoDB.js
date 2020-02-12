@@ -50,9 +50,9 @@ app.post("/users", async (req, res, next) => {
     }
 
     // Check email exist
-    let checkEmailFromDB = await User.find({ email });
+    let checkEmailFromDB = await User.findOne({ email });
     console.log(checkEmailFromDB);
-    if (checkEmailFromDB && checkEmailFromDB.length) {
+    if (checkEmailFromDB) {
       throw new ErrorHandler(400, "Such email is existed!");
     }
 
@@ -90,11 +90,12 @@ app.post("/auth", async (req, res, next) => {
   const { email, password } = req.body;
   try {
     // Check email exist
-    const userFromDB = await User.find({ email: email });
-    if (userFromDB.length === 0) {
+    const userFromDB = await User.findOne({ email: email });
+    console.log(userFromDB);
+    if (!userFromDB) {
       throw new ErrorHandler(400, "Such email doesn't exist");
     }
-    const { email: emailFromDB, password: passwordFromDB } = userFromDB[0];
+    const { email: emailFromDB, password: passwordFromDB } = userFromDB;
     console.log("Email: ", emailFromDB);
     console.log("Password", passwordFromDB);
 
@@ -114,13 +115,7 @@ app.post("/auth", async (req, res, next) => {
         expiresIn: "1h"
       });
       console.log("Token:", token);
-      // return res
-      //   .cookie("token", token, {
-      //     httpOnly: true,
-      //     secure: true,
-      //     sameSite: true
-      //   })
-      //   .sendStatus(200);
+
       return res.send(token);
     }
   } catch (error) {
@@ -138,36 +133,37 @@ app.get("/dashboard", async (req, res) => {
   return res.status(200).send(users);
 });
 
-app.get(
-  "/checkToken",
-  (req, res, next) => {
-    const token =
-      req.body.token ||
-      req.query.token ||
-      req.headers["x-access-token"] ||
-      req.cookies.token;
+const verifySync = async (token, jwtKey) => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, jwtKey, (err, decoded) => {
+      console.log(err, decoded);
+      if (err) {
+        reject(err);
+      } else {
+        resolve(decoded);
+      }
+    });
+  });
+};
 
-    if (!token) {
-      res.status(401).send("Unauthorized: No token provided");
+const isAuth = async (req, res, next) => {
+  const token = req.headers["x-auth"];
+  if (!token) {
+    res.status(401).send("Unauthorized: No token provided");
+  } else {
+    const decodedData = await verifySync(token, jwtKey);
+    const user = await User.findOne({ email: decodedData.emailFromDB });
+
+    if (user) {
+      next();
     } else {
-      jwt.verify(token, jwtKey, function(err, decoded) {
-        if (err) {
-          res.status(401).send("Unauthorized: Invalid token");
-        } else {
-          req.email = decoded.email;
-          next();
-        }
-      });
+      res.status(401).send("User didn't find ");
     }
-  },
-  (req, res) => {
-    return res.sendStatus(200);
   }
-);
-// app.use(withAuth);
-// app.get('/checkToken', withAuth, function(req, res) {
-//   res.sendStatus(200);
-// });
+};
+app.post("/checkToken", isAuth, (req, res) => {
+  return res.sendStatus(200);
+});
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
