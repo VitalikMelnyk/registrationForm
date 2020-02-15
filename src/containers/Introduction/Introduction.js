@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
 import axios from "axios";
 // connect Formik
 import { Formik } from "formik";
@@ -17,21 +17,21 @@ import { SERVER_URL } from "../../shared/serverUrl";
 import { ModalMessage } from "../Form/components/helpers/ModalMessage";
 
 const Introduction = props => {
-  const [cookies, setCookie] = useCookies([]);
   const handleSubmitting = fields => {
-    // console.log(fields);
     if (fields) {
       axios
-        .post(`${SERVER_URL}/auth`, fields)
+        .post(`${SERVER_URL}/login`, fields)
 
         .then(res => {
           console.log(res);
 
           if (res.status === 200) {
-            setCookie("token", res.data);
-            console.log("Cookies: ", cookies);
-            let token = cookies;
-            // const token = false;
+            Cookies.set("AccessToken", res.data.accessToken, {
+              expires: res.data.expiredDate
+            });
+            Cookies.set("RefreshToken", res.data.refreshToken);
+            console.log("Cookies: ", Cookies);
+            let token = Cookies.get("AccessToken");
             console.log(token);
             if (!token) {
               console.log("Token is null");

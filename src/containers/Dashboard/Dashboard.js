@@ -1,40 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { withCookies } from "react-cookie";
+import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
 import { LinkButton } from "../../components/Buttons/LinkButton";
 import "./Dashboard.scss";
 // Connect server url
 import { SERVER_URL } from "../../shared/serverUrl";
 import axios from "axios";
-// import { getRegisteredUsers } from "../../utils/api";
-export const Dashboard = withCookies(props => {
+export const Dashboard = props => {
   const [users, setUsers] = useState([]);
 
   const getData = () => {
     axios
-      .all([
-        axios.get(`${SERVER_URL}/dashboard`),
-        axios.post(
-          `${SERVER_URL}/checkToken`,
-          {},
-          {
-            headers: {
-              "x-auth": `${props.cookies.get("token")}`
-            }
-          }
-        )
-      ])
-      .then(
-        axios.spread((dashboard, checkToken) => {
-          console.log(dashboard);
-          console.log(checkToken);
-
-          if (checkToken.status === 200) {
-            const users = dashboard.data;
-            setUsers(users);
-          }
-        })
-      )
+      .get(`${SERVER_URL}/dashboard`, {
+        headers: {
+          "x-auth": `${Cookies.get("AccessToken")}`
+        }
+      })
+      .then(dashboard => {
+        const users = dashboard.data;
+        setUsers(users);
+      })
       .catch(err => {
         console.log(err);
       });
@@ -84,4 +69,4 @@ export const Dashboard = withCookies(props => {
       </div>
     </>
   );
-});
+};

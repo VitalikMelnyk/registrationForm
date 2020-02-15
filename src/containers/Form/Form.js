@@ -38,7 +38,7 @@ export const Form = props => {
     if (latestData) {
       // latest.data = latestData.date.to
       axios
-        .post(`${SERVER_URL}/users`, latestData)
+        .post(`${SERVER_URL}/register`, latestData)
         .then(res => {
           console.log(res);
           console.log(res.status);

@@ -3,14 +3,17 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
-const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const { handleError, ErrorHandler } = require("./helpers/error");
+const {
+  accessTokenSecret,
+  refreshTokenSecret,
+  saltRounds,
+  port
+} = require("./helpers/config");
 const { User } = require("../config/database/mongoDB/model/mongoose");
 const { redisClient } = require("../config/database/redis/connect");
-const port = 3002;
-const jwtKey = "my_secret_key";
 const app = express();
 
 mongoose.set("useCreateIndex", true);
@@ -21,7 +24,7 @@ app.use(cookieParser());
 //support parsing of application/x-www-form-urlencoded post data
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post("/users", async (req, res, next) => {
+app.post("/register", async (req, res, next) => {
   console.log(req.body);
   const { email, password, confirmPassword, date, city, gender } = req.body;
   try {
@@ -73,56 +76,65 @@ app.post("/users", async (req, res, next) => {
       city: city,
       gender: gender
     };
-    const createUserAndGenerateToken = await new Promise((resolve, reject) => {
-      User.insertMany(values, async (err, result) => {
-        if (err) {
-          console.log(err);
-        }
-        const getUser = await User.findOne({ email });
-        const {
-          email: emailFromDB,
-          password: passwordFromDB,
-          id: userId
-        } = getUser;
-        // console.log(emailFromDB);
-        // console.log(passwordFromDB);
-        const verifyPassword = await new Promise((resolve, reject) => {
-          bcrypt.compare(password, passwordFromDB, (err, success) => {
-            if (err) {
-              console.log(err);
-            }
-            resolve(success);
-          });
-        });
-        // Generate token to client
-        if (emailFromDB && verifyPassword) {
-          const token = jwt.sign({ userId }, jwtKey, {
-            algorithm: "HS256",
-            expiresIn: "1h"
-          });
-          console.log("Token:", token);
-          const redisToken = {
-            userId,
-            token
-          };
-          console.log(redisToken);
-          resolve(redisToken);
-        }
-      });
-    });
-    console.log(createUserAndGenerateToken);
-    const { userId, token } = createUserAndGenerateToken;
+    // -------------GENERATE TOKEN IN REGISTRATION---------------
+    // const createUserAndGenerateToken = await new Promise((resolve, reject) => {
+    //   User.insertMany(values, async (err, result) => {
+    //     if (err) {
+    //       console.log(err);
+    //     }
+    //     const getUser = await User.findOne({ email });
+    //     const {
+    //       email: emailFromDB,
+    //       password: passwordFromDB,
+    //       id: userId
+    //     } = getUser;
+    //     // console.log(emailFromDB);
+    //     // console.log(passwordFromDB);
+    //     const verifyPassword = await new Promise((resolve, reject) => {
+    //       bcrypt.compare(password, passwordFromDB, (err, success) => {
+    //         if (err) {
+    //           console.log(err);
+    //         }
+    //         resolve(success);
+    //       });
+    //     });
+    //     // Generate token to client
+    //     if (emailFromDB && verifyPassword) {
+    //       const token = jwt.sign({ userId }, accessTokenSecret, {
+    //         algorithm: "HS256",
+    //         expiresIn: "1h"
+    //       });
+    //       console.log("Token:", token);
+    //       const redisToken = {
+    //         userId,
+    //         token
+    //       };
+    //       console.log(redisToken);
+    //       resolve(redisToken);
+    //     }
+    //   });
+    // });
+    // console.log(createUserAndGenerateToken);
+    // const { userId, token } = createUserAndGenerateToken;
     // set to redis
-    redisClient.set(userId, token);
-    console.log(redisClient.get(userId));
-    return res.send(createUserAndGenerateToken);
+    // redisClient.set(userId, token);
+    // console.log(redisClient.get(userId));
+    // return res.send(createUserAndGenerateToken);
+
+    let insertUser = await User.create(values, (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+      // console.log(insertUser);
+    });
+    return res.send(insertUser);
   } catch (error) {
     console.log(error);
     return handleError(error, res);
   }
 });
 
-app.post("/auth", async (req, res, next) => {
+app.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
   try {
     // Check email exist
@@ -131,7 +143,11 @@ app.post("/auth", async (req, res, next) => {
     if (!userFromDB) {
       throw new ErrorHandler(400, "Such email doesn't exist");
     }
-    const { email: emailFromDB, password: passwordFromDB } = userFromDB;
+    const {
+      email: emailFromDB,
+      password: passwordFromDB,
+      id: userId
+    } = userFromDB;
     console.log("Email: ", emailFromDB);
     console.log("Password", passwordFromDB);
 
@@ -144,23 +160,34 @@ app.post("/auth", async (req, res, next) => {
       });
     });
     console.log(verifyPassword);
+    if (!verifyPassword) {
+      throw new ErrorHandler(400, "Password isn't correct!");
+    }
     // Generate token to client
     if (emailFromDB && verifyPassword) {
-      const token = jwt.sign({ emailFromDB }, jwtKey, {
+      const accessToken = jwt.sign({ userId }, accessTokenSecret, {
+        algorithm: "HS256",
+        expiresIn: "10s"
+      });
+      const refreshToken = jwt.sign({ userId }, refreshTokenSecret, {
         algorithm: "HS256",
         expiresIn: "1h"
       });
-      console.log("Token:", token);
-      return res.send(token);
+      console.log("AccessToken:", accessToken);
+      console.log("Refresh  Token:", refreshToken);
+      const expiredAt = jwt.decode(accessToken);
+      const expiredDate = expiredAt.exp;
+      redisClient.set(userId, accessToken);
+      return res.send({ accessToken, refreshToken, expiredDate });
     }
   } catch (error) {
     console.log(error);
     return handleError(error, res);
   }
 });
-const verifySync = async (token, jwtKey) => {
+const verifySync = async (token, accessTokenSecret) => {
   return new Promise((resolve, reject) => {
-    jwt.verify(token, jwtKey, (err, decoded) => {
+    jwt.verify(token, accessTokenSecret, (err, decoded) => {
       console.log(err, decoded);
       if (err) {
         reject(err);
@@ -172,24 +199,47 @@ const verifySync = async (token, jwtKey) => {
 };
 
 const isAuth = async (req, res, next) => {
-  const token = req.headers["x-auth"];
-  if (!token) {
+  const tokenFromBrowser = req.headers["x-auth"];
+  if (!tokenFromBrowser) {
     res.status(401).send("Unauthorized: No token provided");
   } else {
-    const decodedData = await verifySync(token, jwtKey);
-    const user = await User.findOne({ email: decodedData.emailFromDB });
-    if (user) {
+    let decodedData;
+    try {
+      decodedData = await verifySync(tokenFromBrowser, accessTokenSecret);
+    } catch (err) {
+      // ,
+      res.status(401).send("User isn't authorized");
+    }
+    const user = await User.findOne({ _id: decodedData.userId });
+    if (!user) {
+      res.status(401).send("User didn't find ");
+    }
+
+    const tokenFromRedis = await new Promise((resolve, reject) => {
+      redisClient.get(user.id, (err, result) => {
+        if (err) {
+          reject(err);
+          throw err;
+        }
+        resolve(result);
+      });
+    });
+
+    if (tokenFromBrowser === tokenFromRedis) {
       next();
     } else {
-      res.status(401).send("User didn't find ");
+      res.status(401).send("Tokens aren't match ");
     }
   }
 };
-app.post("/checkToken", isAuth, (req, res) => {
-  return res.sendStatus(200);
+// app.post("/checkToken", isAuth, (req, res) => {
+//   return res.status(200);
+// });
+app.post("/refreshToken", (req, res) => {
+  const { refreshToken } = req.cookies;
 });
 
-app.get("/dashboard", async (req, res) => {
+app.get("/dashboard", isAuth, async (req, res) => {
   let users = await User.find({}, err => {
     if (err) return console.log(err);
   });
