@@ -17,6 +17,7 @@ export const Dashboard = props => {
         }
       })
       .then(dashboard => {
+        console.log(dashboard);
         const users = dashboard.data;
         setUsers(users);
       })

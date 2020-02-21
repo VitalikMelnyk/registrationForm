@@ -167,27 +167,28 @@ app.post("/login", async (req, res, next) => {
     if (emailFromDB && verifyPassword) {
       const accessToken = jwt.sign({ userId }, accessTokenSecret, {
         algorithm: "HS256",
-        expiresIn: "10s"
+        expiresIn: "1d"
       });
       const refreshToken = jwt.sign({ userId }, refreshTokenSecret, {
         algorithm: "HS256",
-        expiresIn: "1h"
+        expiresIn: "7d"
       });
+      const expireDate = jwt.decode(accessToken).exp;
+
       console.log("AccessToken:", accessToken);
-      console.log("Refresh  Token:", refreshToken);
-      const expiredAt = jwt.decode(accessToken);
-      const expiredDate = expiredAt.exp;
-      redisClient.set(userId, accessToken);
-      return res.send({ accessToken, refreshToken, expiredDate });
+      console.log("RefreshToken:", refreshToken);
+      const options = { accessToken, refreshToken, expireDate };
+      redisClient.set(userId, JSON.stringify(options));
+      return res.send({ accessToken, refreshToken, expireDate });
     }
   } catch (error) {
     console.log(error);
     return handleError(error, res);
   }
 });
-const verifySync = async (token, accessTokenSecret) => {
+const verifySync = async (token, tokenSecret) => {
   return new Promise((resolve, reject) => {
-    jwt.verify(token, accessTokenSecret, (err, decoded) => {
+    jwt.verify(token, tokenSecret, (err, decoded) => {
       console.log(err, decoded);
       if (err) {
         reject(err);
@@ -200,6 +201,7 @@ const verifySync = async (token, accessTokenSecret) => {
 
 const isAuth = async (req, res, next) => {
   const tokenFromBrowser = req.headers["x-auth"];
+
   if (!tokenFromBrowser) {
     res.status(401).send("Unauthorized: No token provided");
   } else {
@@ -221,22 +223,71 @@ const isAuth = async (req, res, next) => {
           reject(err);
           throw err;
         }
-        resolve(result);
+        resolve(JSON.parse(result));
       });
     });
 
-    if (tokenFromBrowser === tokenFromRedis) {
+    if (tokenFromBrowser === tokenFromRedis.accessToken) {
       next();
     } else {
       res.status(401).send("Tokens aren't match ");
     }
   }
 };
-// app.post("/checkToken", isAuth, (req, res) => {
-//   return res.status(200);
-// });
-app.post("/refreshToken", (req, res) => {
-  const { refreshToken } = req.cookies;
+
+app.post("/refreshToken", async (req, res) => {
+  const refreshTokenFromBrowser = req.body.refreshToken;
+  // console.log(refreshToken);
+  // return res.status(200);
+  if (!refreshTokenFromBrowser) {
+    res.status(401).send("Unauthorized: No token provided");
+  } else {
+    let decodedData;
+    try {
+      decodedData = await verifySync(
+        refreshTokenFromBrowser,
+        refreshTokenSecret
+      );
+    } catch (err) {
+      // ,
+      res.status(401).send("User isn't authorized");
+    }
+    const user = await User.findOne({ _id: decodedData.userId });
+    console.log(user);
+    const { id: userId } = user;
+    if (!user) {
+      res.status(401).send("User didn't find ");
+    }
+
+    // const tokenFromRedis = await new Promise((resolve, reject) => {
+    //   redisClient.get(user.id, (err, result) => {
+    //     if (err) {
+    //       reject(err);
+    //       throw err;
+    //     }
+    //     resolve(JSON.parse(result));
+    //   });
+    // });
+
+    // if (refreshToken == tokenFromRedis.refreshToken) {
+    const accessToken = jwt.sign({ userId }, accessTokenSecret, {
+      algorithm: "HS256",
+      expiresIn: "120s"
+    });
+    const refreshToken = jwt.sign({ userId }, refreshTokenSecret, {
+      algorithm: "HS256",
+      expiresIn: "7d"
+    });
+    const expireDate = jwt.decode(accessToken).exp;
+    console.log("AccessToken:", accessToken);
+    console.log("RefreshToken:", refreshToken);
+    const options = { accessToken, refreshToken, expireDate };
+    redisClient.set(userId, JSON.stringify(options));
+    return res.send(options);
+    // } else {
+    //   res.status(401).send("Tokens aren't match ");
+    // }
+  }
 });
 
 app.get("/dashboard", isAuth, async (req, res) => {

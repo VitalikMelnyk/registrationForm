@@ -1,19 +1,44 @@
 import axios from "axios";
-// import { Cookies } from "react-cookie";
 import Cookies from "js-cookie";
-
-axios.interceptors.response.use(undefined, err => {
-  console.log("Test", err);
-  console.log(err.response.status);
-  if (err.response.status === 401) {
-    Cookies.remove("AccessToken");
-    window.location.href = "/";
+import { SERVER_URL } from "../shared/serverUrl";
+// // Add a request interceptor
+axios.interceptors.request.use(
+  config => {
+    // Do something before request is sent
+    console.log("Request");
+    console.log(config);
+    return config;
+  },
+  error => {
+    // Do something with request error
+    return Promise.reject(error);
   }
-});
+);
 
-// axios.interceptors.request.use(undefined, err => {
-//   console.log("Test", err);
-//   const decodedToken = Cookies.get("accessToken");
-//     Cookies.remove("AccessToken");
-//     window.location.href = "/";
-// });
+axios.interceptors.response.use(
+  response => {
+    console.log("Response");
+    console.log(response);
+    const refreshToken = Cookies.get("RefreshToken");
+    const accessToken = Cookies.get("AccessToken");
+    // console.log(refreshToken);
+    // console.log(accessToken);
+    // if (!accessToken) {
+    // if (refreshToken && !accessToken) {
+    if (!accessToken && refreshToken) {
+      axios
+        .post(`${SERVER_URL}/refreshToken`, { refreshToken: refreshToken })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+    return response;
+  },
+  // },
+  err => {
+    return Promise.reject(err);
+  }
+);

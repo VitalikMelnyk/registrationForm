@@ -27,12 +27,10 @@ const Introduction = props => {
 
           if (res.status === 200) {
             Cookies.set("AccessToken", res.data.accessToken, {
-              expires: res.data.expiredDate
+              expires: new Date(res.data.expireDate * 1000)
             });
             Cookies.set("RefreshToken", res.data.refreshToken);
-            console.log("Cookies: ", Cookies);
             let token = Cookies.get("AccessToken");
-            console.log(token);
             if (!token) {
               console.log("Token is null");
             } else {
