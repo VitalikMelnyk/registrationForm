@@ -41,8 +41,13 @@ const Introduction = props => {
         })
         .catch(err => {
           console.log(err);
-          console.log(err.response.status);
-          if (err.response.status === 400) {
+          // console.log(err.response.status);
+          if (err.message === "Network Error") {
+            props.error.setErrorMessage(
+              err.message + ": You need to launch backend server"
+            );
+            props.error.setShow(true);
+          } else if (err.response.status === 400) {
             props.error.setErrorMessage(
               err.message + ": Incorect email or password"
             );

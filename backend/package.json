@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "node --inspect index.js",
     "start": "node serverMongoDbAtlas.js",
-    "heroku-postbuild": "cd ../ && npm install && npm run build"
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "author": "",
   "license": "ISC",
