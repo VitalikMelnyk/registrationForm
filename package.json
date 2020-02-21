@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "debug": "node --inspect index.js",
-    "start": "node serverMongoDbAtlas.js",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "debug": "cd backend && node --inspect index.js",
+    "start": "cd backend && node serverMongoDbAtlas.js",
+    "heroku-postbuild": "cd backend && cd client && npm install && npm run build"
   },
   "author": "",
   "license": "ISC",
